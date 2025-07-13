@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "mcp-emtrafesa": {
+      "command": "bun",
+      "args": ["index.ts"]
+    }
+  }
+}
