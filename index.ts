@@ -22,7 +22,7 @@ server.registerTool(
     return {
       content: [{ type: "text", text: response }],
     };
-  }
+  },
 );
 
 const transport = new StdioServerTransport();
