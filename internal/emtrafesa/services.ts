@@ -30,7 +30,7 @@ export async function getArrivalTerminalsByDepartureTerminal({
     `https://emtrafesa.pe/Home/GetSucursalesDestino?origen=${departureTerminalId}`,
     {
       headers: api.headers,
-    }
+    },
   );
 
   const res = (await req.json()) as Terminal[];
