@@ -5,6 +5,7 @@ import {
   getArrivalTerminalsByDepartureTerminal,
   getDepartureSchedules,
   getFrequentlyAskedQuestions,
+  getLatestPurchaseTickets,
   getTerminals,
 } from "./internal/emtrafesa/services";
 import type {
@@ -119,6 +120,35 @@ server.tool(
       });
       return {
         content: [{ type: "text", text: JSON.stringify(schedules) }],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              error instanceof Error ? error.message : "unknown error",
+            ),
+          },
+        ],
+      };
+    }
+  },
+);
+
+server.tool(
+  "get-latest-purchased-tickets",
+  "Get the latest purchased tickets for a specific departure terminal.",
+
+  {
+    DNI: z.string().describe("DNI of the user"),
+    email: z.string().email().describe("Email of the user"),
+  },
+  async ({ DNI, email }) => {
+    try {
+      const tickets = await getLatestPurchaseTickets({ DNI, email });
+      return {
+        content: [{ type: "text", text: JSON.stringify(tickets) }],
       };
     } catch (error) {
       return {

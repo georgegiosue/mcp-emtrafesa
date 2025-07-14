@@ -9,6 +9,16 @@ export type FAQ = {
   Respuesta: string;
 };
 
+export type Ticket = {
+  dateTime: string;
+  seats: string[];
+  ticketsCodes: string[];
+  price: string;
+  operationNumber: string;
+  origin: string | undefined;
+  destination: string | undefined;
+};
+
 export type DepartureSchedule = {
   Programacion_Id: number;
   Bus_Croquis_Id: string;
