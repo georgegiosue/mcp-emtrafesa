@@ -1,23 +1,49 @@
 {
   "name": "mcp-emtrafesa",
+  "description": "A Model Context Protocol (MCP) server for accessing Emtrafesa bus transportation services in Peru",
+  "version": "1.0.0",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "private": false,
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "server",
+    "emtrafesa",
+    "peru",
+    "transportation",
+    "bus",
+    "api",
+    "typescript",
+    "bun",
+    "sdk",
+    "cheerio",
+    "html",
+    "scraping",
+    "claude"
+  ],
+  "author": "George Giosue",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgegiosue/mcp-emtrafesa"
+  },
   "scripts": {
     "format": "bunx biome check --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "inspect": "bunx @modelcontextprotocol/inspector bun index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.1",
     "@types/bun": "1.2.18",
-    "husky": "9.1.7",
-    "zod": "3.25.76"
+    "husky": "9.1.7"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.15.1",
-    "cheerio": "^1.1.0"
+    "cheerio": "1.1.0",
+    "zod": "3.25.76"
   }
 }
