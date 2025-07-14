@@ -1,34 +1,27 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
 import {
-  getBranches,
-  getfrequentlyAskedQuestions,
+  getArrivalTerminalsByDepartureTerminal,
+  getFrequentlyAskedQuestions,
+  getTerminals,
 } from "./internal/emtrafesa/services";
-import type { Branch, FAQ } from "./internal/emtrafesa/types";
+import type { FAQ, Terminal } from "./internal/emtrafesa/types";
 
 const server = new McpServer({
   name: "mcp-emtrafesa",
   version: "1.0.0",
 });
 
-server.registerTool(
-  "get-branches",
-  {
-    title: "Get Branches",
-    description: "Get branches throughout the country",
-  },
+server.tool(
+  "get-terminals",
+  "Get terminals throughout the country",
   async () => {
     try {
-      const branches: Branch[] = await getBranches();
-      const response = branches.map((b) => {
-        return {
-          Nombre: b.Nombre,
-          Direccion: b.Direccion,
-        };
-      });
+      const terminals: Terminal[] = await getTerminals();
 
       return {
-        content: [{ type: "text", text: JSON.stringify(response) }],
+        content: [{ type: "text", text: JSON.stringify(terminals) }],
       };
     } catch (error) {
       return {
@@ -36,25 +29,21 @@ server.registerTool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error",
+              error instanceof Error ? error.message : "unknow error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
-server.registerTool(
+server.tool(
   "get-frequently-asked-questions",
-  {
-    title: "Get frequently asked questions",
-    description:
-      "Provides frequently asked questions about branches, tickets, types of people, etc.",
-  },
+  "Provides frequently asked questions about terminals, tickets, types of people, etc.",
   async () => {
     try {
-      const faq: FAQ[] = await getfrequentlyAskedQuestions();
+      const faq: FAQ[] = await getFrequentlyAskedQuestions();
 
       return {
         content: [{ type: "text", text: JSON.stringify(faq) }],
@@ -65,13 +54,42 @@ server.registerTool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error",
+              error instanceof Error ? error.message : "unknow error"
             ),
           },
         ],
       };
     }
+  }
+);
+
+server.tool(
+  "get-arrival-terminal",
+  "Get arrival terminal for a departure terminal.",
+
+  {
+    departureTerminalId: z.string().describe("Departure terminal id (origin)"),
   },
+  async ({ departureTerminalId }) => {
+    try {
+      const arrivalTerminals: Terminal[] =
+        await getArrivalTerminalsByDepartureTerminal({ departureTerminalId });
+      return {
+        content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              error instanceof Error ? error.message : "unknown error"
+            ),
+          },
+        ],
+      };
+    }
+  }
 );
 
 const transport = new StdioServerTransport();

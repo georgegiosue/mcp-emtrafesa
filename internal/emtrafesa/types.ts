@@ -1,4 +1,4 @@
-export type Branch = {
+export type Terminal = {
   Id: string;
   Nombre: string;
   Direccion: string;
