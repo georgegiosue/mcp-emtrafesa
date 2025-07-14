@@ -1,11 +1,14 @@
 {
   "name": "mcp-emtrafesa",
   "description": "A Model Context Protocol (MCP) server for accessing Emtrafesa bus transportation services in Peru",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "module": "index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "bin": {
+    "mcp-emtrafesa": "dist/index.js"
+  },
   "private": false,
   "keywords": [
     "mcp",

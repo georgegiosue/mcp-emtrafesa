@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -35,13 +36,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error",
+              error instanceof Error ? error.message : "unknow error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
 server.tool(
@@ -60,13 +61,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error",
+              error instanceof Error ? error.message : "unknow error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
 server.tool(
@@ -89,13 +90,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error",
+              error instanceof Error ? error.message : "unknown error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
 server.tool(
@@ -127,13 +128,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error",
+              error instanceof Error ? error.message : "unknown error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
 server.tool(
@@ -156,13 +157,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error",
+              error instanceof Error ? error.message : "unknown error"
             ),
           },
         ],
       };
     }
-  },
+  }
 );
 
 const transport = new StdioServerTransport();
