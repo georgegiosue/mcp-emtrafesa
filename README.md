@@ -55,9 +55,8 @@ Configure your MCP client to connect to this server:
 {
   "mcpServers": {
     "mcp-emtrafesa": {
-      "command": "bun",
-      "args": ["run", "index.ts"],
-      "cwd": "/path/to/mcp-emtrafesa"
+      "command": "npx",
+      "args": ["mcp-emtrafesa@latest"],
     }
   }
 }
