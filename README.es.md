@@ -2,6 +2,7 @@
 
 > Un servidor del Protocolo de Contexto de Modelo (MCP) para acceder a los servicios de transporte de autobuses de Emtrafesa en Perú
 
+[![NPM Version](https://img.shields.io/npm/v/mcp-emtrafesa?style=flat&logo=npm&logoColor=red)](https://www.npmjs.com/package/mcp-emtrafesa)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Bun](https://img.shields.io/badge/Bun-000000?style=flat&logo=bun&logoColor=white)](https://bun.sh)
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blue)](https://modelcontextprotocol.io)
@@ -56,7 +57,7 @@ Configura tu cliente MCP para conectarse a este servidor:
   "mcpServers": {
     "mcp-emtrafesa": {
       "command": "npx",
-      "args": ["mcp-emtrafesa@latest"],
+      "args": ["mcp-emtrafesa@latest"]
     }
   }
 }
