@@ -26,7 +26,7 @@ server.registerTool(
     return {
       content: [{ type: "text", text: JSON.stringify(response) }],
     };
-  }
+  },
 );
 
 const transport = new StdioServerTransport();
