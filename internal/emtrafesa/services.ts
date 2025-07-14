@@ -1,5 +1,5 @@
 import { api } from "../../config/api";
-import type { Branch } from "./types";
+import type { Branch, FAQ } from "./types";
 
 export async function getBranches(): Promise<Branch[]> {
   const req = await fetch("https://emtrafesa.pe/Home/GetSucursales", {
@@ -7,6 +7,16 @@ export async function getBranches(): Promise<Branch[]> {
   });
 
   const res = (await req.json()) as Branch[];
+
+  return res;
+}
+
+export async function getfrequentlyAskedQuestions(): Promise<FAQ[]> {
+  const req = await fetch("https://emtrafesa.pe/Home/GetPreguntasFrecuentes", {
+    headers: api.headers,
+  });
+
+  const res = (await req.json()) as FAQ[];
 
   return res;
 }

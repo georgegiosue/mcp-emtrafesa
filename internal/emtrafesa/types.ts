@@ -3,3 +3,8 @@ export type Branch = {
   Nombre: string;
   Direccion: string;
 };
+
+export type FAQ = {
+  Pregunta: string;
+  Respuesta: string;
+};
