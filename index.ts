@@ -36,13 +36,13 @@ server.registerTool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error"
+              error instanceof Error ? error.message : "unknow error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 server.registerTool(
@@ -65,13 +65,13 @@ server.registerTool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error"
+              error instanceof Error ? error.message : "unknow error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 const transport = new StdioServerTransport();
