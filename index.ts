@@ -3,10 +3,15 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import {
   getArrivalTerminalsByDepartureTerminal,
+  getDepartureSchedules,
   getFrequentlyAskedQuestions,
   getTerminals,
 } from "./internal/emtrafesa/services";
-import type { FAQ, Terminal } from "./internal/emtrafesa/types";
+import type {
+  DepartureSchedule,
+  FAQ,
+  Terminal,
+} from "./internal/emtrafesa/types";
 
 const server = new McpServer({
   name: "mcp-emtrafesa",
@@ -76,6 +81,44 @@ server.tool(
         await getArrivalTerminalsByDepartureTerminal({ departureTerminalId });
       return {
         content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              error instanceof Error ? error.message : "unknown error",
+            ),
+          },
+        ],
+      };
+    }
+  },
+);
+
+server.tool(
+  "get-departure-schedules",
+  "Get departure schedules for a specific departure terminal.",
+
+  {
+    departureTerminalId: z.string().describe("Departure terminal id (origin)"),
+    arrivalTerminalId: z.string().describe("Arrival terminal id (destination)"),
+    date: z
+      .string()
+      .optional()
+      //Peru date format: DD/MM/YYYY - e.g. 14/07/2025
+      .describe("Date in the format DD/MM/YYYY"),
+  },
+  async ({ departureTerminalId, arrivalTerminalId, date }) => {
+    try {
+      const schedules: DepartureSchedule[] = await getDepartureSchedules({
+        departureTerminalId,
+        arrivalTerminalId,
+        date,
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify(schedules) }],
       };
     } catch (error) {
       return {
