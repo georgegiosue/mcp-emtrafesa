@@ -7,6 +7,9 @@
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blue)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+- **English**: [README.md](README.md)
+- **Español**: [README.es.md](README.es.md) (Estás aquí)
+
 **MCP Emtrafesa** es un servidor del Protocolo de Contexto de Modelo que proporciona a los asistentes de IA acceso fluido al sistema de transporte de autobuses Emtrafesa de Perú. Consulta terminales, horarios, boletos y preguntas frecuentes a través de herramientas MCP estandarizadas.
 
 ## 🚀 Características
