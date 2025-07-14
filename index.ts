@@ -16,13 +16,17 @@ server.registerTool(
   },
   async () => {
     const branches: Branch[] = await getBranches();
-    const response = branches
-      .map((b) => `Ciudad: ${b.Nombre}, Ubicacion: ${b.Direccion}`)
-      .toString();
+    const response = branches.map((b) => {
+      return {
+        Nombre: b.Nombre,
+        Direccion: b.Direccion,
+      };
+    });
+
     return {
-      content: [{ type: "text", text: response }],
+      content: [{ type: "text", text: JSON.stringify(response) }],
     };
-  },
+  }
 );
 
 const transport = new StdioServerTransport();
