@@ -3,6 +3,8 @@
   "description": "A Model Context Protocol (MCP) server for accessing Emtrafesa bus transportation services in Peru",
   "version": "1.0.0",
   "module": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "private": false,
   "keywords": [
@@ -28,7 +30,13 @@
     "type": "git",
     "url": "git+https://github.com/georgegiosue/mcp-emtrafesa"
   },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ],
   "scripts": {
+    "build": "bun build --target=node ./index.ts --outfile=dist/index.js && bun run build:declaration",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
     "format": "bunx biome check --write",
     "prepare": "husky",
     "inspect": "bunx @modelcontextprotocol/inspector bun index.ts"
