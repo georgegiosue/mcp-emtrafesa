@@ -2,7 +2,7 @@
   "servers": {
     "mcp-emtrafesa": {
       "command": "bun",
-      "args": ["index.ts"]
+      "args": ["src/index.ts"]
     }
   }
 }

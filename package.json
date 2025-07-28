@@ -2,12 +2,12 @@
   "name": "mcp-emtrafesa",
   "description": "A Model Context Protocol (MCP) server for accessing Emtrafesa bus transportation services in Peru",
   "version": "1.0.1",
-  "module": "index.ts",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "src/index.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "type": "module",
   "bin": {
-    "mcp-emtrafesa": "dist/index.js"
+    "mcp-emtrafesa": "dist/src/index.js"
   },
   "private": false,
   "keywords": [
@@ -34,15 +34,15 @@
     "url": "git+https://github.com/georgegiosue/mcp-emtrafesa"
   },
   "files": [
-    "dist/*.js",
-    "dist/*.d.ts"
+    "dist/src/*.js",
+    "dist/src/*.d.ts"
   ],
   "scripts": {
-    "build": "bun build --target=node ./index.ts --outfile=dist/index.js && bun run build:declaration",
+    "build": "bun build --target=node ./src/index.ts --outfile=dist/src/index.js && bun run build:declaration",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
     "format": "bunx biome check --write",
     "prepare": "husky",
-    "inspect": "bunx @modelcontextprotocol/inspector bun index.ts"
+    "inspect": "bunx @modelcontextprotocol/inspector bun src/index.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.1",

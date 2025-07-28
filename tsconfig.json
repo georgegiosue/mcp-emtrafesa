@@ -4,7 +4,7 @@
     "rootDir": "./",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     },
     "lib": ["ESNext"],
     "module": "esnext",
@@ -23,5 +23,5 @@
     "allowJs": true,
     "types": ["bun-types"]
   },
-  "include": ["./**/*.ts"]
+  "include": ["./src/**/*.ts"]
 }
