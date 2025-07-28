@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
 import {
   getArrivalTerminalsByDepartureTerminal,
   getDepartureSchedules,
@@ -11,9 +14,6 @@ import type {
   FAQ,
   Terminal,
 } from "@/internal/emtrafesa/types";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
 
 const server = new McpServer({
   name: "mcp-emtrafesa",
@@ -36,13 +36,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error"
+              error instanceof Error ? error.message : "unknow error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 server.tool(
@@ -61,13 +61,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknow error"
+              error instanceof Error ? error.message : "unknow error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 server.tool(
@@ -90,13 +90,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error"
+              error instanceof Error ? error.message : "unknown error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 server.tool(
@@ -128,13 +128,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error"
+              error instanceof Error ? error.message : "unknown error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 server.tool(
@@ -157,13 +157,13 @@ server.tool(
           {
             type: "text",
             text: JSON.stringify(
-              error instanceof Error ? error.message : "unknown error"
+              error instanceof Error ? error.message : "unknown error",
             ),
           },
         ],
       };
     }
-  }
+  },
 );
 
 const transport = new StdioServerTransport();
