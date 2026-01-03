@@ -8,12 +8,18 @@ import {
   getLatestPurchaseTickets,
   getTerminals,
 } from "@/internal/emtrafesa/services";
-import type {
-  DepartureSchedule,
-  FAQ,
-  Terminal,
-} from "@/internal/emtrafesa/types";
-import { bufferToBase64, isPdfBuffer } from "@/lib/utils";
+import { bufferToBase64, isPdfBuffer, pdfBufferToPng } from "@/lib/utils";
+
+function errorResponse(error: unknown) {
+  return {
+    content: [
+      {
+        type: "text" as const,
+        text: error instanceof Error ? error.message : "unknown error",
+      },
+    ],
+  };
+}
 
 export async function registerTools(server: McpServer) {
   server.tool(
@@ -21,22 +27,10 @@ export async function registerTools(server: McpServer) {
     "Get terminals throughout the country",
     async () => {
       try {
-        const terminals: Terminal[] = await getTerminals();
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(terminals) }],
-        };
+        const terminals = await getTerminals();
+        return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknow error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );
@@ -46,22 +40,10 @@ export async function registerTools(server: McpServer) {
     "Provides frequently asked questions about terminals, tickets, types of people, etc.",
     async () => {
       try {
-        const faq: FAQ[] = await getFrequentlyAskedQuestions();
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(faq) }],
-        };
+        const faq = await getFrequentlyAskedQuestions();
+        return { content: [{ type: "text", text: JSON.stringify(faq) }] };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknow error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );
@@ -69,7 +51,6 @@ export async function registerTools(server: McpServer) {
   server.tool(
     "get-arrival-terminal",
     "Get arrival terminal for a departure terminal.",
-
     {
       departureTerminalId: z
         .string()
@@ -77,22 +58,14 @@ export async function registerTools(server: McpServer) {
     },
     async ({ departureTerminalId }) => {
       try {
-        const arrivalTerminals: Terminal[] =
-          await getArrivalTerminalsByDepartureTerminal({ departureTerminalId });
+        const arrivalTerminals = await getArrivalTerminalsByDepartureTerminal({
+          departureTerminalId,
+        });
         return {
           content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
         };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknown error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );
@@ -100,7 +73,6 @@ export async function registerTools(server: McpServer) {
   server.tool(
     "get-departure-schedules",
     "Get departure schedules for a specific departure terminal.",
-
     {
       departureTerminalId: z
         .string()
@@ -108,33 +80,18 @@ export async function registerTools(server: McpServer) {
       arrivalTerminalId: z
         .string()
         .describe("Arrival terminal id (destination)"),
-      date: z
-        .string()
-        .optional()
-        //Peru date format: DD/MM/YYYY - e.g. 14/07/2025
-        .describe("Date in the format DD/MM/YYYY"),
+      date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
     },
     async ({ departureTerminalId, arrivalTerminalId, date }) => {
       try {
-        const schedules: DepartureSchedule[] = await getDepartureSchedules({
+        const schedules = await getDepartureSchedules({
           departureTerminalId,
           arrivalTerminalId,
           date,
         });
-        return {
-          content: [{ type: "text", text: JSON.stringify(schedules) }],
-        };
+        return { content: [{ type: "text", text: JSON.stringify(schedules) }] };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknown error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );
@@ -142,7 +99,6 @@ export async function registerTools(server: McpServer) {
   server.tool(
     "get-latest-purchased-tickets",
     "Get the latest purchased tickets for a specific departure terminal.",
-
     {
       DNI: z.string().describe("DNI of the user"),
       email: z.string().email().describe("Email of the user"),
@@ -150,64 +106,42 @@ export async function registerTools(server: McpServer) {
     async ({ DNI, email }) => {
       try {
         const tickets = await getLatestPurchaseTickets({ DNI, email });
-        return {
-          content: [{ type: "text", text: JSON.stringify(tickets) }],
-        };
+        return { content: [{ type: "text", text: JSON.stringify(tickets) }] };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknown error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );
 
   server.tool(
-    "download-ticket-pdf",
-    "Download a PDF of a ticket by its code.",
-
+    "get-ticket-image",
+    "Get a ticket as PNG image by its code.",
     {
-      tiketCode: z.string().describe("Ticket code"),
+      ticketCode: z.string().describe("Ticket code"),
     },
-    async ({ tiketCode }) => {
+    async ({ ticketCode }) => {
       try {
-        const pdfBuffer = await downloadTicketPDF({ tiketCode });
+        const pdfBuffer = await downloadTicketPDF({ tiketCode: ticketCode });
 
         if (!isPdfBuffer(pdfBuffer)) {
           throw new Error("Received invalid PDF data from server");
         }
 
-        const base64Data = bufferToBase64(pdfBuffer);
+        const pngPages = await pdfBufferToPng(pdfBuffer);
+
+        if (pngPages.length === 0) {
+          throw new Error("Failed to convert PDF to images");
+        }
 
         return {
-          content: [
-            {
-              type: "resource",
-              resource: {
-                uri: `data:application/pdf;base64,${base64Data}`,
-                blob: base64Data,
-                mimeType: "application/pdf",
-              },
-            },
-          ],
+          content: pngPages.map((page) => ({
+            type: "image" as const,
+            data: bufferToBase64(page.content),
+            mimeType: "image/png" as const,
+          })),
         };
       } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(
-                error instanceof Error ? error.message : "unknown error",
-              ),
-            },
-          ],
-        };
+        return errorResponse(error);
       }
     },
   );

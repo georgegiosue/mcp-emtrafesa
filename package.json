@@ -38,7 +38,7 @@
     "dist/src/*.d.ts"
   ],
   "scripts": {
-    "build": "bun build --target=node ./src/index.ts --outfile=dist/src/index.js && bun run build:declaration",
+    "build": "bun build --target=node ./src/index.ts --outdir=dist/src --external pdf-to-png-converter && bun run build:declaration",
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
     "format": "bunx biome check --write",
     "prepare": "husky",
@@ -56,6 +56,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.25.1",
     "cheerio": "1.1.2",
+    "pdf-to-png-converter": "^3.11.0",
     "zod": "3.25.76"
   }
 }
