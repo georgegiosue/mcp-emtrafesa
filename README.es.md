@@ -13,44 +13,23 @@
 
 **MCP Emtrafesa** es un servidor del Protocolo de Contexto de Modelo que proporciona a los asistentes de IA acceso fluido al sistema de transporte de autobuses Emtrafesa de Perú. Consulta terminales, horarios, boletos y preguntas frecuentes a través de herramientas MCP estandarizadas.
 
-## 🚀 Características
+---
 
-- **🏢 Gestión de Terminales**: Accede a todos los terminales de autobuses en todo el Perú
-- **📅 Consulta de Horarios**: Horarios de salida y llegada en tiempo real
-- **🎫 Búsqueda de Boletos**: Busca boletos comprados por DNI y correo electrónico
-- **❓ Soporte de FAQ**: Accede a preguntas frecuentes
-- **🔍 Planificación de Rutas**: Encuentra rutas disponibles entre terminales
-- **🌍 Específico para Perú**: Formatos de fecha localizados y manejo de zona horaria
+## ¿Qué puedes hacer con este MCP?
 
-## 📦 Instalación
+- **Buscar terminales** de buses en todo el Perú
+- **Consultar horarios** entre cualquier par de ciudades
+- **Ver tus boletos comprados** usando tu DNI y correo electrónico
+- **Descargar tu boleto en PDF** para imprimir o compartir
+- **Obtener respuestas** a preguntas frecuentes
 
-### Prerrequisitos
+---
 
-- [Bun](https://bun.sh) v1.2.10 o superior
-- Node.js v18+ (para soporte de TypeScript)
+## Inicio Rápido
 
-### Inicio Rápido
+### Opción 1: Usar directamente con npx (Recomendado)
 
-```bash
-# Clona el repositorio
-git clone https://github.com/georgegiosue/mcp-emtrafesa.git
-cd mcp-emtrafesa
-
-# Instala las dependencias
-bun install
-
-# Inicia el servidor MCP
-bun run index.ts
-
-# Opcional: Inicia con el Inspector del Protocolo de Contexto de Modelo
-bunx @modelcontextprotocol/inspector bun index.ts
-```
-
-## 🔧 Uso
-
-### Integración con Cliente MCP
-
-Configura tu cliente MCP para conectarse a este servidor:
+Agrega a la configuración de tu cliente MCP:
 
 ```json
 {
@@ -63,109 +42,137 @@ Configura tu cliente MCP para conectarse a este servidor:
 }
 ```
 
-### Herramientas Disponibles
+### Opción 2: Clonar y ejecutar localmente
 
-| Herramienta                      | Descripción                                        | Parámetros                                          |
-| -------------------------------- | -------------------------------------------------- | --------------------------------------------------- |
-| `get-terminals`                  | Obtiene todos los terminales de autobuses del Perú | Ninguno                                             |
-| `get-arrival-terminal`           | Obtiene terminales de destino para origen          | `departureTerminalId`                               |
-| `get-departure-schedules`        | Obtiene horarios entre terminales                  | `departureTerminalId`, `arrivalTerminalId`, `date?` |
-| `get-latest-purchased-tickets`   | Busca boletos por información del usuario          | `DNI`, `email`                                      |
-| `get-frequently-asked-questions` | Obtiene FAQs sobre el servicio                     | Ninguno                                             |
+```bash
+# Clona el repositorio
+git clone https://github.com/georgegiosue/mcp-emtrafesa.git
+cd mcp-emtrafesa
 
-### Ejemplos de Consultas
+# Instala las dependencias
+bun install
+
+# Inicia el servidor MCP
+bun run index.ts
+```
+
+> **Tip:** Usa el Inspector MCP para depuración: `bunx @modelcontextprotocol/inspector bun index.ts`
+
+---
+
+## Herramientas Disponibles
+
+| Herramienta | Descripción | Parámetros |
+|-------------|-------------|------------|
+| `get-terminals` | Obtiene todos los terminales de buses del Perú | Ninguno |
+| `get-arrival-terminal` | Obtiene terminales de destino para un origen | `departureTerminalId` |
+| `get-departure-schedules` | Obtiene horarios entre dos terminales | `departureTerminalId`, `arrivalTerminalId`, `date?` |
+| `get-latest-purchased-tickets` | Busca tus boletos comprados | `DNI`, `email` |
+| `download-ticket-pdf` | Descarga tu boleto como archivo PDF | `ticketCode` |
+| `get-frequently-asked-questions` | Obtiene preguntas frecuentes del servicio | Ninguno |
+
+---
+
+## Ejemplos de Uso
+
+### Obtener todos los terminales
 
 ```typescript
-// Obtener todos los terminales
 const terminals = await client.callTool("get-terminals");
+```
 
-// Buscar rutas de Chiclayo a Trujillo
+### Buscar horarios de Chiclayo a Trujillo
+
+```typescript
 const schedules = await client.callTool("get-departure-schedules", {
   departureTerminalId: "002",
   arrivalTerminalId: "001",
   date: "14/07/2025", // formato DD/MM/YYYY
 });
+```
 
-// Buscar boletos comprados
+### Ver tus boletos comprados
+
+```typescript
 const tickets = await client.callTool("get-latest-purchased-tickets", {
   DNI: "12345678",
   email: "usuario@ejemplo.com",
 });
 ```
 
+### Descargar tu boleto en PDF
+
+```typescript
+const pdf = await client.callTool("download-ticket-pdf", {
+  ticketCode: "BP01-123456",
+});
+// Devuelve un PDF codificado en base64 que puedes guardar o mostrar
+```
+
+---
+
+## Requisitos
+
+- [Bun](https://bun.sh) v1.2.10+ o Node.js v18+
+- Un cliente compatible con MCP (Claude Desktop, etc.)
+
+---
+
 ## Estructura del Proyecto
 
 ```
 mcp-emtrafesa/
-├── 📁 config/          # Configuración de API
-│   └── api.ts          # Cabeceras y configuraciones base
-├── 📁 internal/        # Lógica de negocio principal
-│   └── emtrafesa/      # Código específico de Emtrafesa
-│       ├── services.ts # Funciones del cliente API
-│       └── types.ts    # Definiciones de tipos TypeScript
-├── 📄 index.ts         # Punto de entrada del servidor MCP
-├── 📄 package.json     # Dependencias y scripts
-├── 📄 tsconfig.json    # Configuración de TypeScript
-└── 📄 biome.json       # Reglas de formateo de código
+├── src/
+│   ├── common/         # Herramientas y utilidades compartidas
+│   ├── config/         # Configuración de API
+│   ├── internal/       # Lógica de negocio (servicios, tipos)
+│   └── lib/            # Utilidades auxiliares
+├── index.ts            # Punto de entrada del servidor MCP
+├── package.json
+└── tsconfig.json
 ```
 
-## 🛡️ Integración de API
+---
 
-### Endpoints Soportados
-
-- **Terminales**: `GET /Home/GetSucursales`
-- **Destinos**: `GET /Home/GetSucursalesDestino`
-- **Horarios**: `POST /Home/GetItinerario` (JSON)
-- **Boletos**: `POST /Consulta/PostConsulta` (Codificado en formulario)
-- **FAQs**: `GET /Home/GetPreguntasFrecuentes`
-
-### Manejo de Datos
-
-- **APIs JSON**: Deserialización directa para datos estructurados
-- **Web Scraping HTML**: Análisis basado en Cheerio para información de boletos
-- **Formatos de Fecha**: Zona horaria de Perú (America/Lima) con formato DD/MM/YYYY
-- **Manejo de Errores**: Degradación elegante con respuestas de error JSON
-
-## 🧪 Desarrollo
-
-### Formateo de Código
+## Desarrollo
 
 ```bash
-# Formatear código con Biome
+# Formatear código
 bun run format
 
-# Verificar formateo sin escribir
+# Verificar formateo
 bunx biome check
 ```
 
-### Seguridad de Tipos
+---
 
-- Configuración estricta de TypeScript con `noUncheckedIndexedAccess`
-- Esquemas Zod para validación en tiempo de ejecución
-- Mapeo exacto de campos de API en definiciones de tipos
+## Contribuciones
 
-## 🤝 Contribuciones
+1. Haz fork del repositorio
+2. Crea una rama de característica (`git checkout -b feature/nueva-caracteristica`)
+3. Formatea tu código (`bun run format`)
+4. Confirma tus cambios
+5. Abre un Pull Request
 
-1. **Haz fork** del repositorio
-2. **Crea** una rama de característica (`git checkout -b feature/caracteristica-increible`)
-3. **Formatea** tu código (`bun run format`)
-4. **Confirma** tus cambios (`git commit -m 'Agrega característica increíble'`)
-5. **Envía** a la rama (`git push origin feature/caracteristica-increible`)
-6. **Abre** un Pull Request
+---
 
-## 📄 Licencia
+## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
+Licencia MIT - ver [LICENSE](LICENSE) para más detalles.
+
+---
 
 ## Reconocimientos
 
-- [Emtrafesa](https://emtrafesa.pe) por proporcionar la API de transporte
-- [Model Context Protocol](https://modelcontextprotocol.io) por la especificación MCP
-- [@tecncr](https://github.com/tecncr) por los insights de endpoints de API
-- [Bun](https://bun.sh) por el runtime rápido de JavaScript
+- [Emtrafesa](https://emtrafesa.pe) - Proveedor de la API de transporte
+- [Model Context Protocol](https://modelcontextprotocol.io) - Especificación MCP
+- [@tecncr](https://github.com/tecncr) - Insights de endpoints de API
+- [Bun](https://bun.sh) - Runtime rápido de JavaScript
+
+---
 
 ## Soporte
 
-- **Issues**: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues)
-- **Discusiones**: [GitHub Discussions](https://github.com/georgegiosue/mcp-emtrafesa/discussions)
-- **Email**: [peraldonamoc@gmail.com](mailto:peraldonamoc@gmail.com)
+- [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues)
+- [GitHub Discussions](https://github.com/georgegiosue/mcp-emtrafesa/discussions)
+- Email: [peraldonamoc@gmail.com](mailto:peraldonamoc@gmail.com)

@@ -13,44 +13,23 @@
 
 **MCP Emtrafesa** is a Model Context Protocol server that provides AI assistants with seamless access to Peru's Emtrafesa bus transportation system. Query terminals, schedules, tickets, and FAQs through standardized MCP tools.
 
-## 🚀 Features
+---
 
-- **🏢 Terminal Management**: Access all bus terminals across Peru
-- **📅 Schedule Queries**: Real-time departure and arrival schedules
-- **🎫 Ticket Lookup**: Search purchased tickets by DNI and email
-- **❓ FAQ Support**: Access frequently asked questions
-- **🔍 Route Planning**: Find available routes between terminals
-- **🌍 Peru-Specific**: Localized date formats and timezone handling
+## What can you do with this MCP?
 
-## 📦 Installation
+- **Find bus terminals** across Peru
+- **Check schedules** between any two cities
+- **Look up your purchased tickets** using your DNI and email
+- **Download your ticket as PDF** for printing or sharing
+- **Get answers** to frequently asked questions
 
-### Prerequisites
+---
 
-- [Bun](https://bun.sh) v1.2.10 or higher
-- Node.js v18+ (for TypeScript support)
+## Quick Start
 
-### Quick Start
+### Option 1: Use directly with npx (Recommended)
 
-```bash
-# Clone the repository
-git clone https://github.com/georgegiosue/mcp-emtrafesa.git
-cd mcp-emtrafesa
-
-# Install dependencies
-bun install
-
-# Start the MCP server
-bun run index.ts
-
-# Optional: Start with Model Context Protocol Inspector
-bunx @modelcontextprotocol/inspector bun index.ts
-```
-
-## 🔧 Usage
-
-### MCP Client Integration
-
-Configure your MCP client to connect to this server:
+Add to your MCP client configuration:
 
 ```json
 {
@@ -63,109 +42,137 @@ Configure your MCP client to connect to this server:
 }
 ```
 
-### Available Tools
+### Option 2: Clone and run locally
 
-| Tool                             | Description                          | Parameters                                          |
-| -------------------------------- | ------------------------------------ | --------------------------------------------------- |
-| `get-terminals`                  | Get all bus terminals in Peru        | None                                                |
-| `get-arrival-terminal`           | Get destination terminals for origin | `departureTerminalId`                               |
-| `get-departure-schedules`        | Get schedules between terminals      | `departureTerminalId`, `arrivalTerminalId`, `date?` |
-| `get-latest-purchased-tickets`   | Search tickets by user info          | `DNI`, `email`                                      |
-| `get-frequently-asked-questions` | Get FAQs about the service           | None                                                |
+```bash
+# Clone the repository
+git clone https://github.com/georgegiosue/mcp-emtrafesa.git
+cd mcp-emtrafesa
 
-### Example Queries
+# Install dependencies
+bun install
+
+# Start the MCP server
+bun run index.ts
+```
+
+> **Tip:** Use the MCP Inspector for debugging: `bunx @modelcontextprotocol/inspector bun index.ts`
+
+---
+
+## Available Tools
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `get-terminals` | Get all bus terminals in Peru | None |
+| `get-arrival-terminal` | Get destination terminals for a given origin | `departureTerminalId` |
+| `get-departure-schedules` | Get schedules between two terminals | `departureTerminalId`, `arrivalTerminalId`, `date?` |
+| `get-latest-purchased-tickets` | Search your purchased tickets | `DNI`, `email` |
+| `download-ticket-pdf` | Download your ticket as a PDF file | `ticketCode` |
+| `get-frequently-asked-questions` | Get FAQs about the service | None |
+
+---
+
+## Usage Examples
+
+### Get all terminals
 
 ```typescript
-// Get all terminals
 const terminals = await client.callTool("get-terminals");
+```
 
-// Find routes from Chiclayo to Trujillo
+### Find schedules from Chiclayo to Trujillo
+
+```typescript
 const schedules = await client.callTool("get-departure-schedules", {
   departureTerminalId: "002",
   arrivalTerminalId: "001",
   date: "14/07/2025", // DD/MM/YYYY format
 });
+```
 
-// Look up purchased tickets
+### Look up your purchased tickets
+
+```typescript
 const tickets = await client.callTool("get-latest-purchased-tickets", {
   DNI: "12345678",
   email: "user@example.com",
 });
 ```
 
+### Download your ticket as PDF
+
+```typescript
+const pdf = await client.callTool("download-ticket-pdf", {
+  ticketCode: "BP01-123456",
+});
+// Returns a base64-encoded PDF that can be saved or displayed
+```
+
+---
+
+## Requirements
+
+- [Bun](https://bun.sh) v1.2.10+ or Node.js v18+
+- An MCP-compatible client (Claude Desktop, etc.)
+
+---
+
 ## Project Structure
 
 ```
 mcp-emtrafesa/
-├── 📁 config/          # API configuration
-│   └── api.ts          # Headers and base settings
-├── 📁 internal/        # Core business logic
-│   └── emtrafesa/      # Emtrafesa-specific code
-│       ├── services.ts # API client functions
-│       └── types.ts    # TypeScript type definitions
-├── 📄 index.ts         # MCP server entry point
-├── 📄 package.json     # Dependencies and scripts
-├── 📄 tsconfig.json    # TypeScript configuration
-└── 📄 biome.json       # Code formatting rules
+├── src/
+│   ├── common/         # Shared tools and utilities
+│   ├── config/         # API configuration
+│   ├── internal/       # Core business logic (services, types)
+│   └── lib/            # Helper utilities
+├── index.ts            # MCP server entry point
+├── package.json
+└── tsconfig.json
 ```
 
-## 🛡️ API Integration
+---
 
-### Supported Endpoints
-
-- **Terminals**: `GET /Home/GetSucursales`
-- **Destinations**: `GET /Home/GetSucursalesDestino`
-- **Schedules**: `POST /Home/GetItinerario` (JSON)
-- **Tickets**: `POST /Consulta/PostConsulta` (Form-encoded)
-- **FAQs**: `GET /Home/GetPreguntasFrecuentes`
-
-### Data Handling
-
-- **JSON APIs**: Direct deserialization for structured data
-- **HTML Scraping**: Cheerio-based parsing for ticket information
-- **Date Formats**: Peru timezone (America/Lima) with DD/MM/YYYY format
-- **Error Handling**: Graceful degradation with JSON error responses
-
-## 🧪 Development
-
-### Code Formatting
+## Development
 
 ```bash
-# Format code with Biome
+# Format code
 bun run format
 
-# Check formatting without writing
+# Check formatting
 bunx biome check
 ```
 
-### Type Safety
+---
 
-- Strict TypeScript configuration with `noUncheckedIndexedAccess`
-- Zod schemas for runtime validation
-- Exact API field mapping in type definitions
+## Contributing
 
-## 🤝 Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Format your code (`bun run format`)
+4. Commit your changes
+5. Open a Pull Request
 
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Format** your code (`bun run format`)
-4. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-5. **Push** to the branch (`git push origin feature/amazing-feature`)
-6. **Open** a Pull Request
+---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
 
 ## Acknowledgments
 
-- [Emtrafesa](https://emtrafesa.pe) for providing the transportation API
-- [Model Context Protocol](https://modelcontextprotocol.io) for the MCP specification
-- [@tecncr](https://github.com/tecncr) for API endpoint insights
-- [Bun](https://bun.sh) for the fast JavaScript runtime
+- [Emtrafesa](https://emtrafesa.pe) - Transportation API provider
+- [Model Context Protocol](https://modelcontextprotocol.io) - MCP specification
+- [@tecncr](https://github.com/tecncr) - API endpoint insights
+- [Bun](https://bun.sh) - Fast JavaScript runtime
+
+---
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/georgegiosue/mcp-emtrafesa/discussions)
-- **Email**: [peraldonamoc@gmail.com](mailto:peraldonamoc@gmail.com)
+- [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues)
+- [GitHub Discussions](https://github.com/georgegiosue/mcp-emtrafesa/discussions)
+- Email: [peraldonamoc@gmail.com](mailto:peraldonamoc@gmail.com)
