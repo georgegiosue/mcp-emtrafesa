@@ -68,7 +68,7 @@ bun run index.ts
 | `get-arrival-terminal` | Get destination terminals for a given origin | `departureTerminalId` |
 | `get-departure-schedules` | Get schedules between two terminals | `departureTerminalId`, `arrivalTerminalId`, `date?` |
 | `get-latest-purchased-tickets` | Search your purchased tickets | `DNI`, `email` |
-| `download-ticket-pdf` | Download your ticket as a PDF file | `ticketCode` |
+| `get-ticket-pdf` | Download your ticket as a PDF file | `ticketCode` |
 | `get-frequently-asked-questions` | Get FAQs about the service | None |
 
 ---
@@ -103,7 +103,7 @@ const tickets = await client.callTool("get-latest-purchased-tickets", {
 ### Download your ticket as PDF
 
 ```typescript
-const pdf = await client.callTool("download-ticket-pdf", {
+const pdf = await client.callTool("get-ticket-pdf", {
   ticketCode: "BP01-123456",
 });
 // Returns a base64-encoded PDF that can be saved or displayed

@@ -68,7 +68,7 @@ bun run index.ts
 | `get-arrival-terminal` | Obtiene terminales de destino para un origen | `departureTerminalId` |
 | `get-departure-schedules` | Obtiene horarios entre dos terminales | `departureTerminalId`, `arrivalTerminalId`, `date?` |
 | `get-latest-purchased-tickets` | Busca tus boletos comprados | `DNI`, `email` |
-| `download-ticket-pdf` | Descarga tu boleto como archivo PDF | `ticketCode` |
+| `get-ticket-pdf` | Descarga tu boleto como archivo PDF | `ticketCode` |
 | `get-frequently-asked-questions` | Obtiene preguntas frecuentes del servicio | Ninguno |
 
 ---
@@ -103,7 +103,7 @@ const tickets = await client.callTool("get-latest-purchased-tickets", {
 ### Descargar tu boleto en PDF
 
 ```typescript
-const pdf = await client.callTool("download-ticket-pdf", {
+const pdf = await client.callTool("get-ticket-pdf", {
   ticketCode: "BP01-123456",
 });
 // Devuelve un PDF codificado en base64 que puedes guardar o mostrar
