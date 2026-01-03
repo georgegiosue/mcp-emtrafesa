@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
+  downloadTicketPDF,
   getArrivalTerminalsByDepartureTerminal,
   getDepartureSchedules,
   getFrequentlyAskedQuestions,
@@ -12,6 +13,7 @@ import type {
   FAQ,
   Terminal,
 } from "@/internal/emtrafesa/types";
+import { bufferToBase64, isPdfBuffer } from "@/lib/utils";
 
 export async function registerTools(server: McpServer) {
   server.tool(
@@ -150,6 +152,50 @@ export async function registerTools(server: McpServer) {
         const tickets = await getLatestPurchaseTickets({ DNI, email });
         return {
           content: [{ type: "text", text: JSON.stringify(tickets) }],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                error instanceof Error ? error.message : "unknown error",
+              ),
+            },
+          ],
+        };
+      }
+    },
+  );
+
+  server.tool(
+    "download-ticket-pdf",
+    "Download a PDF of a ticket by its code.",
+
+    {
+      tiketCode: z.string().describe("Ticket code"),
+    },
+    async ({ tiketCode }) => {
+      try {
+        const pdfBuffer = await downloadTicketPDF({ tiketCode });
+
+        if (!isPdfBuffer(pdfBuffer)) {
+          throw new Error("Received invalid PDF data from server");
+        }
+
+        const base64Data = bufferToBase64(pdfBuffer);
+
+        return {
+          content: [
+            {
+              type: "resource",
+              resource: {
+                uri: `data:application/pdf;base64,${base64Data}`,
+                blob: base64Data,
+                mimeType: "application/pdf",
+              },
+            },
+          ],
         };
       } catch (error) {
         return {

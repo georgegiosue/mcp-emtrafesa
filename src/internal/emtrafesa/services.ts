@@ -153,3 +153,24 @@ export async function getLatestPurchaseTickets({
 
   return tickets;
 }
+
+export async function downloadTicketPDF({
+  tiketCode,
+}: {
+  tiketCode: string;
+}): Promise<Buffer> {
+  const req = await fetch(
+    `https://www.emtrafesa.pe/Home/ComprobanteDescarga?Boletos=3,BP01,${tiketCode}`,
+    {
+      headers: api.headers,
+    },
+  );
+
+  if (!req.ok) {
+    throw new Error(`Failed to download ticket PDF: ${req.statusText}`);
+  }
+
+  const arrayBuffer = await req.arrayBuffer();
+
+  return Buffer.from(arrayBuffer);
+}
