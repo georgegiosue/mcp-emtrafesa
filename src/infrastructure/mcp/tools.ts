@@ -115,7 +115,7 @@ export function registerTools(
 
   server.tool(
     "get-ticket-pdf",
-    "Download a ticket PDF by its code. Returns base64 encoded PDF data.",
+    "Download and view a ticket PDF by its code. Returns a data URL that can be opened in browser.",
     {
       ticketCode: z.string().describe("Ticket code"),
     },
@@ -127,12 +127,13 @@ export function registerTools(
         return {
           content: [
             {
-              type: "text",
-              text: JSON.stringify({
-                ticketCode,
-                pdfBase64: base64Data,
+              type: "resource",
+              resource: {
+                uri: `ticket://${ticketCode}/document.pdf`,
+                name: `Ticket ${ticketCode}`,
                 mimeType: "application/pdf",
-              }),
+                blob: base64Data,
+              },
             },
           ],
         };
