@@ -1,14 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import {
-  downloadTicketPDF,
-  getArrivalTerminalsByDepartureTerminal,
-  getDepartureSchedules,
-  getFrequentlyAskedQuestions,
-  getLatestPurchaseTickets,
-  getTerminals,
-} from "@/internal/emtrafesa/services";
-import { bufferToBase64, isPdfBuffer, pdfBufferToPng } from "@/lib/utils";
+import type { EmtrafesaRepository } from "../../domain/ports/emtrafesa.repository";
+import { bufferToBase64 } from "../../shared/utils";
 
 function errorResponse(error: unknown) {
   return {
@@ -21,26 +14,25 @@ function errorResponse(error: unknown) {
   };
 }
 
-export async function registerTools(server: McpServer) {
-  server.tool(
-    "get-terminals",
-    "Get terminals throughout the country",
-    async () => {
-      try {
-        const terminals = await getTerminals();
-        return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
-      } catch (error) {
-        return errorResponse(error);
-      }
-    },
-  );
+export function registerTools(
+  server: McpServer,
+  repository: EmtrafesaRepository,
+) {
+  server.tool("get-terminals", "Get terminals throughout the country", async () => {
+    try {
+      const terminals = await repository.getTerminals();
+      return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
+    } catch (error) {
+      return errorResponse(error);
+    }
+  });
 
   server.tool(
     "get-frequently-asked-questions",
     "Provides frequently asked questions about terminals, tickets, types of people, etc.",
     async () => {
       try {
-        const faq = await getFrequentlyAskedQuestions();
+        const faq = await repository.getFrequentlyAskedQuestions();
         return { content: [{ type: "text", text: JSON.stringify(faq) }] };
       } catch (error) {
         return errorResponse(error);
@@ -52,18 +44,14 @@ export async function registerTools(server: McpServer) {
     "get-arrival-terminal",
     "Get arrival terminal for a departure terminal.",
     {
-      departureTerminalId: z
-        .string()
-        .describe("Departure terminal id (origin)"),
+      departureTerminalId: z.string().describe("Departure terminal id (origin)"),
     },
     async ({ departureTerminalId }) => {
       try {
-        const arrivalTerminals = await getArrivalTerminalsByDepartureTerminal({
+        const arrivalTerminals = await repository.getArrivalTerminalsByDepartureTerminal({
           departureTerminalId,
         });
-        return {
-          content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
-        };
+        return { content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }] };
       } catch (error) {
         return errorResponse(error);
       }
@@ -74,17 +62,13 @@ export async function registerTools(server: McpServer) {
     "get-departure-schedules",
     "Get departure schedules for a specific departure terminal.",
     {
-      departureTerminalId: z
-        .string()
-        .describe("Departure terminal id (origin)"),
-      arrivalTerminalId: z
-        .string()
-        .describe("Arrival terminal id (destination)"),
+      departureTerminalId: z.string().describe("Departure terminal id (origin)"),
+      arrivalTerminalId: z.string().describe("Arrival terminal id (destination)"),
       date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
     },
     async ({ departureTerminalId, arrivalTerminalId, date }) => {
       try {
-        const schedules = await getDepartureSchedules({
+        const schedules = await repository.getDepartureSchedules({
           departureTerminalId,
           arrivalTerminalId,
           date,
@@ -105,7 +89,7 @@ export async function registerTools(server: McpServer) {
     },
     async ({ DNI, email }) => {
       try {
-        const tickets = await getLatestPurchaseTickets({ DNI, email });
+        const tickets = await repository.getLatestPurchaseTickets({ DNI, email });
         return { content: [{ type: "text", text: JSON.stringify(tickets) }] };
       } catch (error) {
         return errorResponse(error);
@@ -114,31 +98,27 @@ export async function registerTools(server: McpServer) {
   );
 
   server.tool(
-    "get-ticket-image",
-    "Get a ticket as PNG image by its code.",
+    "get-ticket-pdf",
+    "Download a ticket PDF by its code. Returns base64 encoded PDF data.",
     {
       ticketCode: z.string().describe("Ticket code"),
     },
     async ({ ticketCode }) => {
       try {
-        const pdfBuffer = await downloadTicketPDF({ tiketCode: ticketCode });
-
-        if (!isPdfBuffer(pdfBuffer)) {
-          throw new Error("Received invalid PDF data from server");
-        }
-
-        const pngPages = await pdfBufferToPng(pdfBuffer);
-
-        if (pngPages.length === 0) {
-          throw new Error("Failed to convert PDF to images");
-        }
+        const pdfBuffer = await repository.downloadTicketPDF({ ticketCode });
+        const base64Data = bufferToBase64(pdfBuffer);
 
         return {
-          content: pngPages.map((page) => ({
-            type: "image" as const,
-            data: bufferToBase64(page.content),
-            mimeType: "image/png" as const,
-          })),
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                ticketCode,
+                pdfBase64: base64Data,
+                mimeType: "application/pdf",
+              }),
+            },
+          ],
         };
       } catch (error) {
         return errorResponse(error);
