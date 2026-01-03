@@ -103,8 +103,6 @@ mcp-emtrafesa/
 │   └── emtrafesa/      # Emtrafesa-specific code
 │       ├── services.ts # API client functions
 │       └── types.ts    # TypeScript type definitions
-├── 📁 sandbox/         # Development utilities
-│   └── post-consulta.html # HTML parsing reference
 ├── 📄 index.ts         # MCP server entry point
 ├── 📄 package.json     # Dependencies and scripts
 ├── 📄 tsconfig.json    # TypeScript configuration
@@ -145,15 +143,6 @@ bunx biome check
 - Strict TypeScript configuration with `noUncheckedIndexedAccess`
 - Zod schemas for runtime validation
 - Exact API field mapping in type definitions
-
-### Testing HTML Parsing
-
-Use the reference file for testing changes:
-
-```bash
-# View the HTML structure reference
-open sanbox/post-consulta.html
-```
 
 ## 🤝 Contributing
 

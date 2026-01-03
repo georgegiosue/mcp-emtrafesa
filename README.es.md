@@ -103,8 +103,6 @@ mcp-emtrafesa/
 │   └── emtrafesa/      # Código específico de Emtrafesa
 │       ├── services.ts # Funciones del cliente API
 │       └── types.ts    # Definiciones de tipos TypeScript
-├── 📁 sandbox/         # Utilidades de desarrollo
-│   └── post-consulta.html # Referencia para análisis HTML
 ├── 📄 index.ts         # Punto de entrada del servidor MCP
 ├── 📄 package.json     # Dependencias y scripts
 ├── 📄 tsconfig.json    # Configuración de TypeScript
@@ -145,15 +143,6 @@ bunx biome check
 - Configuración estricta de TypeScript con `noUncheckedIndexedAccess`
 - Esquemas Zod para validación en tiempo de ejecución
 - Mapeo exacto de campos de API en definiciones de tipos
-
-### Pruebas de Análisis HTML
-
-Usa el archivo de referencia para probar cambios:
-
-```bash
-# Ver la referencia de estructura HTML
-open sandbox/post-consulta.html
-```
 
 ## 🤝 Contribuciones
 
