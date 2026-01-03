@@ -18,14 +18,18 @@ export function registerTools(
   server: McpServer,
   repository: EmtrafesaRepository,
 ) {
-  server.tool("get-terminals", "Get terminals throughout the country", async () => {
-    try {
-      const terminals = await repository.getTerminals();
-      return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
-    } catch (error) {
-      return errorResponse(error);
-    }
-  });
+  server.tool(
+    "get-terminals",
+    "Get terminals throughout the country",
+    async () => {
+      try {
+        const terminals = await repository.getTerminals();
+        return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
+      } catch (error) {
+        return errorResponse(error);
+      }
+    },
+  );
 
   server.tool(
     "get-frequently-asked-questions",
@@ -44,14 +48,19 @@ export function registerTools(
     "get-arrival-terminal",
     "Get arrival terminal for a departure terminal.",
     {
-      departureTerminalId: z.string().describe("Departure terminal id (origin)"),
+      departureTerminalId: z
+        .string()
+        .describe("Departure terminal id (origin)"),
     },
     async ({ departureTerminalId }) => {
       try {
-        const arrivalTerminals = await repository.getArrivalTerminalsByDepartureTerminal({
-          departureTerminalId,
-        });
-        return { content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }] };
+        const arrivalTerminals =
+          await repository.getArrivalTerminalsByDepartureTerminal({
+            departureTerminalId,
+          });
+        return {
+          content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
+        };
       } catch (error) {
         return errorResponse(error);
       }
@@ -62,8 +71,12 @@ export function registerTools(
     "get-departure-schedules",
     "Get departure schedules for a specific departure terminal.",
     {
-      departureTerminalId: z.string().describe("Departure terminal id (origin)"),
-      arrivalTerminalId: z.string().describe("Arrival terminal id (destination)"),
+      departureTerminalId: z
+        .string()
+        .describe("Departure terminal id (origin)"),
+      arrivalTerminalId: z
+        .string()
+        .describe("Arrival terminal id (destination)"),
       date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
     },
     async ({ departureTerminalId, arrivalTerminalId, date }) => {
@@ -89,7 +102,10 @@ export function registerTools(
     },
     async ({ DNI, email }) => {
       try {
-        const tickets = await repository.getLatestPurchaseTickets({ DNI, email });
+        const tickets = await repository.getLatestPurchaseTickets({
+          DNI,
+          email,
+        });
         return { content: [{ type: "text", text: JSON.stringify(tickets) }] };
       } catch (error) {
         return errorResponse(error);

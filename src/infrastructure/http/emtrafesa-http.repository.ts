@@ -17,9 +17,12 @@ export class EmtrafesaHttpRepository implements EmtrafesaRepository {
   }
 
   async getFrequentlyAskedQuestions(): Promise<FAQ[]> {
-    const req = await fetch("https://emtrafesa.pe/Home/GetPreguntasFrecuentes", {
-      headers: api.headers,
-    });
+    const req = await fetch(
+      "https://emtrafesa.pe/Home/GetPreguntasFrecuentes",
+      {
+        headers: api.headers,
+      },
+    );
     return (await req.json()) as FAQ[];
   }
 
