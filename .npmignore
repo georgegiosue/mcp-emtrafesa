@@ -1,0 +1,27 @@
+# Source files (not needed in package)
+src/
+*.ts
+!*.d.ts
+
+# Development files
+node_modules/
+*.tgz
+.husky/
+biome.json
+tsconfig*.json
+
+# IDE and system files
+.idea/
+.vscode/
+.DS_Store
+
+# Test and coverage
+coverage/
+*.lcov
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env*

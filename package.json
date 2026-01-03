@@ -42,6 +42,7 @@
     "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
     "format": "bunx biome check --write",
     "prepare": "husky",
+    "prepublishOnly": "bun run build",
     "inspect": "bunx @modelcontextprotocol/inspector bun src/index.ts"
   },
   "devDependencies": {
