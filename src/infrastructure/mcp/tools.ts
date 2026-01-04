@@ -18,9 +18,11 @@ export function registerTools(
   server: McpServer,
   repository: EmtrafesaRepository,
 ) {
-  server.tool(
+  server.registerTool(
     "get-terminals",
-    "Get terminals throughout the country",
+    {
+      description: "Get terminals throughout the country",
+    },
     async () => {
       try {
         const terminals = await repository.getTerminals();
@@ -31,9 +33,12 @@ export function registerTools(
     },
   );
 
-  server.tool(
+  server.registerTool(
     "get-frequently-asked-questions",
-    "Provides frequently asked questions about terminals, tickets, types of people, etc.",
+    {
+      description:
+        "Provides frequently asked questions about terminals, tickets, types of people, etc.",
+    },
     async () => {
       try {
         const faq = await repository.getFrequentlyAskedQuestions();
@@ -44,13 +49,15 @@ export function registerTools(
     },
   );
 
-  server.tool(
+  server.registerTool(
     "get-arrival-terminal",
-    "Get arrival terminal for a departure terminal.",
     {
-      departureTerminalId: z
-        .string()
-        .describe("Departure terminal id (origin)"),
+      description: "Get arrival terminal for a departure terminal.",
+      inputSchema: {
+        departureTerminalId: z
+          .string()
+          .describe("Departure terminal id (origin)"),
+      },
     },
     async ({ departureTerminalId }) => {
       try {
@@ -67,17 +74,19 @@ export function registerTools(
     },
   );
 
-  server.tool(
+  server.registerTool(
     "get-departure-schedules",
-    "Get departure schedules for a specific departure terminal.",
     {
-      departureTerminalId: z
-        .string()
-        .describe("Departure terminal id (origin)"),
-      arrivalTerminalId: z
-        .string()
-        .describe("Arrival terminal id (destination)"),
-      date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
+      description: "Get departure schedules for a specific departure terminal.",
+      inputSchema: {
+        departureTerminalId: z
+          .string()
+          .describe("Departure terminal id (origin)"),
+        arrivalTerminalId: z
+          .string()
+          .describe("Arrival terminal id (destination)"),
+        date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
+      },
     },
     async ({ departureTerminalId, arrivalTerminalId, date }) => {
       try {
@@ -93,12 +102,15 @@ export function registerTools(
     },
   );
 
-  server.tool(
+  server.registerTool(
     "get-latest-purchased-tickets",
-    "Get the latest purchased tickets for a specific departure terminal.",
     {
-      DNI: z.string().describe("DNI of the user"),
-      email: z.string().email().describe("Email of the user"),
+      description:
+        "Get the latest purchased tickets for a specific departure terminal.",
+      inputSchema: {
+        DNI: z.string().describe("DNI of the user"),
+        email: z.string().email().describe("Email of the user"),
+      },
     },
     async ({ DNI, email }) => {
       try {
@@ -113,11 +125,14 @@ export function registerTools(
     },
   );
 
-  server.tool(
+  server.registerTool(
     "get-ticket-pdf",
-    "Download and view a ticket PDF by its code. Returns a data URL that can be opened in browser.",
     {
-      ticketCode: z.string().describe("Ticket code"),
+      description:
+        "Download and view a ticket PDF by its code. Returns a data URL that can be opened in browser.",
+      inputSchema: {
+        ticketCode: z.string().describe("Ticket code"),
+      },
     },
     async ({ ticketCode }) => {
       try {
