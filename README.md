@@ -123,11 +123,15 @@ const pdf = await client.callTool("get-ticket-pdf", {
 ```
 mcp-emtrafesa/
 ├── src/
-│   ├── common/         # Shared tools and utilities
-│   ├── config/         # API configuration
-│   ├── internal/       # Core business logic (services, types)
-│   └── lib/            # Helper utilities
-├── index.ts            # MCP server entry point
+│   ├── config/                # API configuration
+│   ├── domain/                # Domain layer
+│   │   ├── models/            # Domain models
+│   │   └── ports/             # Repository interfaces
+│   ├── infrastructure/        # Infrastructure layer
+│   │   ├── http/              # HTTP repository implementations
+│   │   └── mcp/               # MCP server tools
+│   ├── shared/                # Shared utilities
+│   └── index.ts               # MCP server entry point
 ├── package.json
 └── tsconfig.json
 ```
