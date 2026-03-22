@@ -115,15 +115,49 @@ Una vez conectado, puedes preguntarle a Claude de forma natural:
 ```
 mcp-emtrafesa/
 ├── src/
-│   ├── config/                # Configuración de API
-│   ├── domain/                # Capa de dominio
-│   │   ├── models/            # Modelos del dominio
-│   │   └── ports/             # Interfaces de repositorios
-│   ├── infrastructure/        # Capa de infraestructura
-│   │   ├── http/              # Implementaciones de repositorios HTTP
-│   │   └── mcp/               # Herramientas del servidor MCP
-│   ├── shared/                # Utilidades compartidas
-│   └── index.ts               # Punto de entrada del servidor MCP
+│   ├── config/                        # Configuración de API
+│   ├── domain/
+│   │   ├── models/                    # Interfaces de modelos del dominio
+│   │   └── ports/                     # Interfaz del repositorio (contrato)
+│   ├── infrastructure/
+│   │   ├── http/                      # Implementación del repositorio HTTP
+│   │   └── mcp/
+│   │       └── tools/
+│   │           ├── index.ts           # Descubre y registra las tools automáticamente
+│   │           ├── tool.ts            # Interfaz Tool + helper register()
+│   │           ├── error.ts           # errorResponse() compartido
+│   │           ├── faq/
+│   │           │   └── get-frequently-asked-questions/
+│   │           │       ├── constants.ts
+│   │           │       └── get-frequently-asked-questions.ts
+│   │           ├── schedule/
+│   │           │   └── get-departure-schedules/
+│   │           │       ├── constants.ts
+│   │           │       ├── schema.ts
+│   │           │       ├── types.ts
+│   │           │       └── get-departure-schedules.ts
+│   │           ├── terminal/
+│   │           │   ├── get-terminals/
+│   │           │   │   ├── constants.ts
+│   │           │   │   └── get-terminals.ts
+│   │           │   └── get-arrival-terminals/
+│   │           │       ├── constants.ts
+│   │           │       ├── schema.ts
+│   │           │       ├── types.ts
+│   │           │       └── get-arrival-terminals.ts
+│   │           └── ticket/
+│   │               ├── get-latest-purchased-tickets/
+│   │               │   ├── constants.ts
+│   │               │   ├── schema.ts
+│   │               │   ├── types.ts
+│   │               │   └── get-latest-purchased-tickets.ts
+│   │               └── get-ticket-pdf/
+│   │                   ├── constants.ts
+│   │                   ├── schema.ts
+│   │                   ├── types.ts
+│   │                   └── get-ticket-pdf.ts
+│   ├── shared/                        # Utilidades compartidas
+│   └── index.ts                       # Punto de entrada del servidor MCP
 ├── package.json
 └── tsconfig.json
 ```
