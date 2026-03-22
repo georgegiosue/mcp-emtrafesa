@@ -29,9 +29,14 @@
 
 ## Inicio Rápido
 
-### Opción 1: Usar directamente con npx (Recomendado)
+### Opción 1: Claude Desktop (Recomendado)
 
-Agrega a la configuración de tu cliente MCP:
+Abre el archivo de configuración de Claude Desktop:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Agrega la siguiente entrada:
 
 ```json
 {
@@ -44,6 +49,8 @@ Agrega a la configuración de tu cliente MCP:
 }
 ```
 
+Reinicia Claude Desktop. Verás un indicador MCP en la esquina inferior derecha del chat cuando el servidor esté conectado.
+
 ### Opción 2: Clonar y ejecutar localmente
 
 ```bash
@@ -53,12 +60,22 @@ cd mcp-emtrafesa
 
 # Instala las dependencias
 bun install
-
-# Inicia el servidor MCP
-bun run index.ts
 ```
 
-> **Tip:** Usa el Inspector MCP para depuración: `bunx @modelcontextprotocol/inspector bun index.ts`
+Luego apunta tu cliente MCP al servidor local:
+
+```json
+{
+  "mcpServers": {
+    "mcp-emtrafesa": {
+      "command": "bun",
+      "args": ["/ruta/absoluta/a/mcp-emtrafesa/src/index.ts"]
+    }
+  }
+}
+```
+
+> **Tip:** Usa el Inspector MCP para depuración: `bunx @modelcontextprotocol/inspector bun src/index.ts`
 
 ---
 
@@ -67,7 +84,7 @@ bun run index.ts
 | Herramienta | Descripción | Parámetros |
 |-------------|-------------|------------|
 | `get-terminals` | Obtiene todos los terminales de buses del Perú | Ninguno |
-| `get-arrival-terminal` | Obtiene terminales de destino para un origen | `departureTerminalId` |
+| `get-arrival-terminals` | Obtiene terminales de destino para un origen | `departureTerminalId` |
 | `get-departure-schedules` | Obtiene horarios entre dos terminales | `departureTerminalId`, `arrivalTerminalId`, `date?` |
 | `get-latest-purchased-tickets` | Busca tus boletos comprados | `DNI`, `email` |
 | `get-ticket-pdf` | Descarga tu boleto como archivo PDF | `ticketCode` |
@@ -77,39 +94,12 @@ bun run index.ts
 
 ## Ejemplos de Uso
 
-### Obtener todos los terminales
+Una vez conectado, puedes preguntarle a Claude de forma natural:
 
-```typescript
-const terminals = await client.callTool("get-terminals");
-```
-
-### Buscar horarios de Chiclayo a Trujillo
-
-```typescript
-const schedules = await client.callTool("get-departure-schedules", {
-  departureTerminalId: "002",
-  arrivalTerminalId: "001",
-  date: "14/07/2025", // formato DD/MM/YYYY
-});
-```
-
-### Ver tus boletos comprados
-
-```typescript
-const tickets = await client.callTool("get-latest-purchased-tickets", {
-  DNI: "12345678",
-  email: "usuario@ejemplo.com",
-});
-```
-
-### Descargar tu boleto en PDF
-
-```typescript
-const pdf = await client.callTool("get-ticket-pdf", {
-  ticketCode: "BP01-123456",
-});
-// Devuelve un PDF codificado en base64 que puedes guardar o mostrar
-```
+- *"¿Qué terminales de buses tiene Emtrafesa?"*
+- *"¿Qué horarios hay de Chiclayo a Trujillo el 14/07/2025?"*
+- *"Busca mis boletos con DNI 12345678 y correo usuario@ejemplo.com"*
+- *"Descarga el PDF del boleto BP01-123456"*
 
 ---
 

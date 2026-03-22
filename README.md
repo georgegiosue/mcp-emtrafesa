@@ -29,9 +29,14 @@
 
 ## Quick Start
 
-### Option 1: Use directly with npx (Recommended)
+### Option 1: Claude Desktop (Recommended)
 
-Add to your MCP client configuration:
+Open your Claude Desktop configuration file:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+Add the following entry:
 
 ```json
 {
@@ -44,6 +49,8 @@ Add to your MCP client configuration:
 }
 ```
 
+Restart Claude Desktop. You'll see an MCP indicator in the bottom-right corner of the chat input when the server is connected.
+
 ### Option 2: Clone and run locally
 
 ```bash
@@ -53,12 +60,22 @@ cd mcp-emtrafesa
 
 # Install dependencies
 bun install
-
-# Start the MCP server
-bun run index.ts
 ```
 
-> **Tip:** Use the MCP Inspector for debugging: `bunx @modelcontextprotocol/inspector bun index.ts`
+Then point your MCP client to the local server:
+
+```json
+{
+  "mcpServers": {
+    "mcp-emtrafesa": {
+      "command": "bun",
+      "args": ["/absolute/path/to/mcp-emtrafesa/src/index.ts"]
+    }
+  }
+}
+```
+
+> **Tip:** Use the MCP Inspector for debugging: `bunx @modelcontextprotocol/inspector bun src/index.ts`
 
 ---
 
@@ -67,7 +84,7 @@ bun run index.ts
 | Tool | Description | Parameters |
 |------|-------------|------------|
 | `get-terminals` | Get all bus terminals in Peru | None |
-| `get-arrival-terminal` | Get destination terminals for a given origin | `departureTerminalId` |
+| `get-arrival-terminals` | Get destination terminals for a given origin | `departureTerminalId` |
 | `get-departure-schedules` | Get schedules between two terminals | `departureTerminalId`, `arrivalTerminalId`, `date?` |
 | `get-latest-purchased-tickets` | Search your purchased tickets | `DNI`, `email` |
 | `get-ticket-pdf` | Download your ticket as a PDF file | `ticketCode` |
@@ -77,39 +94,12 @@ bun run index.ts
 
 ## Usage Examples
 
-### Get all terminals
+Once connected, you can ask Claude naturally:
 
-```typescript
-const terminals = await client.callTool("get-terminals");
-```
-
-### Find schedules from Chiclayo to Trujillo
-
-```typescript
-const schedules = await client.callTool("get-departure-schedules", {
-  departureTerminalId: "002",
-  arrivalTerminalId: "001",
-  date: "14/07/2025", // DD/MM/YYYY format
-});
-```
-
-### Look up your purchased tickets
-
-```typescript
-const tickets = await client.callTool("get-latest-purchased-tickets", {
-  DNI: "12345678",
-  email: "user@example.com",
-});
-```
-
-### Download your ticket as PDF
-
-```typescript
-const pdf = await client.callTool("get-ticket-pdf", {
-  ticketCode: "BP01-123456",
-});
-// Returns a base64-encoded PDF that can be saved or displayed
-```
+- *"What bus terminals does Emtrafesa have?"*
+- *"What schedules are available from Chiclayo to Trujillo on 14/07/2025?"*
+- *"Look up my tickets with DNI 12345678 and email user@example.com"*
+- *"Download the PDF for ticket BP01-123456"*
 
 ---
 
