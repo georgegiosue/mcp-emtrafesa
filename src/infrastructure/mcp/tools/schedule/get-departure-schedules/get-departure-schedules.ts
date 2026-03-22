@@ -10,15 +10,14 @@ export const tool: Tool<
 > = {
   name: TOOL_NAME,
   config: { description: DESCRIPTION, inputSchema },
-  async handler({ departureTerminalId }, repository) {
+  async handler({ departureTerminalId, arrivalTerminalId, date }, repository) {
     try {
-      const arrivalTerminals =
-        await repository.getArrivalTerminalsByDepartureTerminal({
-          departureTerminalId,
-        });
-      return {
-        content: [{ type: "text", text: JSON.stringify(arrivalTerminals) }],
-      };
+      const schedules = await repository.getDepartureSchedules({
+        departureTerminalId,
+        arrivalTerminalId,
+        date,
+      });
+      return { content: [{ type: "text", text: JSON.stringify(schedules) }] };
     } catch (error) {
       return errorResponse(error);
     }

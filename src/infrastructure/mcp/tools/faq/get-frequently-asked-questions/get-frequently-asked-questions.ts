@@ -7,8 +7,8 @@ export const tool: Tool = {
   config: { description: DESCRIPTION },
   async handler(_params, repository) {
     try {
-      const terminals = await repository.getTerminals();
-      return { content: [{ type: "text", text: JSON.stringify(terminals) }] };
+      const faq = await repository.getFrequentlyAskedQuestions();
+      return { content: [{ type: "text", text: JSON.stringify(faq) }] };
     } catch (error) {
       return errorResponse(error);
     }
