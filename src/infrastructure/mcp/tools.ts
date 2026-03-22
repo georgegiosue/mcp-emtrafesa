@@ -5,6 +5,7 @@ import { bufferToBase64 } from "../../shared/utils";
 
 function errorResponse(error: unknown) {
   return {
+    isError: true as const,
     content: [
       {
         type: "text" as const,
@@ -21,7 +22,8 @@ export function registerTools(
   server.registerTool(
     "get-terminals",
     {
-      description: "Get terminals throughout the country",
+      description:
+        "Retrieve all Emtrafesa bus terminals across Peru. Returns a list of terminal objects each with an Id, Nombre (name), and Direccion (address). Call this tool first to discover valid terminal IDs before querying destinations or schedules. The Id field is required as input for get-arrival-terminals and get-departure-schedules.",
     },
     async () => {
       try {
@@ -37,7 +39,7 @@ export function registerTools(
     "get-frequently-asked-questions",
     {
       description:
-        "Provides frequently asked questions about terminals, tickets, types of people, etc.",
+        "Retrieve the official Emtrafesa FAQ list covering topics such as terminal locations, ticket purchasing, passenger categories (children, seniors, etc.), luggage policies, and service rules. Use this to answer general questions about how Emtrafesa operates without needing to query schedules or tickets.",
     },
     async () => {
       try {
@@ -50,13 +52,16 @@ export function registerTools(
   );
 
   server.registerTool(
-    "get-arrival-terminal",
+    "get-arrival-terminals",
     {
-      description: "Get arrival terminal for a departure terminal.",
+      description:
+        "Retrieve all available destination terminals reachable from a given departure terminal. Call get-terminals first to obtain a valid departureTerminalId. Use the Id values from the returned list as the arrivalTerminalId when calling get-departure-schedules.",
       inputSchema: {
         departureTerminalId: z
           .string()
-          .describe("Departure terminal id (origin)"),
+          .describe(
+            "The unique identifier of the origin (departure) terminal. Obtain this from the Id field returned by get-terminals.",
+          ),
       },
     },
     async ({ departureTerminalId }) => {
@@ -77,15 +82,25 @@ export function registerTools(
   server.registerTool(
     "get-departure-schedules",
     {
-      description: "Get departure schedules for a specific departure terminal.",
+      description:
+        "Retrieve available bus departure schedules between two Emtrafesa terminals. Returns schedule objects including departure time, arrival time, service class, available seats per floor, ticket prices, and whether the service is direct. If no date is provided, defaults to today in Peru time (America/Lima timezone). Call get-terminals and get-arrival-terminals first to obtain valid terminal IDs.",
       inputSchema: {
         departureTerminalId: z
           .string()
-          .describe("Departure terminal id (origin)"),
+          .describe(
+            "The unique identifier of the origin terminal. Obtain from the Id field returned by get-terminals.",
+          ),
         arrivalTerminalId: z
           .string()
-          .describe("Arrival terminal id (destination)"),
-        date: z.string().optional().describe("Date in the format DD/MM/YYYY"),
+          .describe(
+            "The unique identifier of the destination terminal. Obtain from the Id field returned by get-arrival-terminals for the selected departure terminal.",
+          ),
+        date: z
+          .string()
+          .optional()
+          .describe(
+            "Travel date in DD/MM/YYYY format (e.g. '25/12/2025'). If omitted, defaults to today in Peru time (America/Lima). Cannot be a past date.",
+          ),
       },
     },
     async ({ departureTerminalId, arrivalTerminalId, date }) => {
@@ -106,10 +121,18 @@ export function registerTools(
     "get-latest-purchased-tickets",
     {
       description:
-        "Get the latest purchased tickets for a specific departure terminal.",
+        "Look up the most recently purchased Emtrafesa bus tickets associated with a passenger's DNI and email address. Returns ticket records including travel date/time, seat numbers, ticket codes, price, operation number, and origin/destination. Use the values from the ticketsCodes array as input for get-ticket-pdf to download each PDF receipt.",
       inputSchema: {
-        DNI: z.string().describe("DNI of the user"),
-        email: z.string().email().describe("Email of the user"),
+        DNI: z
+          .string()
+          .describe(
+            "The passenger's DNI (Documento Nacional de Identidad), the Peruvian national ID number. Numeric string, typically 8 digits.",
+          ),
+        email: z
+          .email()
+          .describe(
+            "The email address used when purchasing the tickets. Must match the DNI exactly as registered with Emtrafesa.",
+          ),
       },
     },
     async ({ DNI, email }) => {
@@ -129,9 +152,13 @@ export function registerTools(
     "get-ticket-pdf",
     {
       description:
-        "Download and view a ticket PDF by its code. Returns a data URL that can be opened in browser.",
+        "Download an Emtrafesa bus ticket as a PDF document. Returns the PDF as a base64-encoded resource. Requires a ticketCode obtained from the ticketsCodes array in get-latest-purchased-tickets results. A single purchase may have multiple ticket codes, one per seat — call this tool once per code to retrieve each document.",
       inputSchema: {
-        ticketCode: z.string().describe("Ticket code"),
+        ticketCode: z
+          .string()
+          .describe(
+            "The individual ticket code (boleto code) for a single seat. Obtain from the ticketsCodes array returned by get-latest-purchased-tickets.",
+          ),
       },
     },
     async ({ ticketCode }) => {

@@ -2,7 +2,7 @@ import { describe, expect, it, mock } from "bun:test";
 import { fixtures } from "../../helpers/fixtures";
 import { withRepo } from "./helpers";
 
-describe("get-arrival-terminal", () => {
+describe("get-arrival-terminals", () => {
   it("passes departureTerminalId to repo and returns JSON text", async () => {
     const { repo, tools } = withRepo({
       getArrivalTerminalsByDepartureTerminal: mock(() =>
@@ -10,7 +10,7 @@ describe("get-arrival-terminal", () => {
       ),
     });
 
-    const result = (await tools["get-arrival-terminal"].handler(
+    const result = (await tools["get-arrival-terminals"].handler(
       { departureTerminalId: "001" },
       {},
     )) as { content: { type: string; text: string }[] };
@@ -31,7 +31,7 @@ describe("get-arrival-terminal", () => {
       ),
     });
 
-    const result = (await tools["get-arrival-terminal"].handler(
+    const result = (await tools["get-arrival-terminals"].handler(
       { departureTerminalId: "001" },
       {},
     )) as { content: { type: string; text: string }[] };
