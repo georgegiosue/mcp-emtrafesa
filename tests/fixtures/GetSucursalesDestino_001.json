@@ -1,0 +1,107 @@
+[
+  {
+    "Id": "5",
+    "Nombre": "CAJAMARCA",
+    "Direccion": "AV. ATAHUALPA 606 - CAJAMARCA-CAJAMARCA-CAJAMARCA"
+  },
+  {
+    "Id": "24",
+    "Nombre": "CHAO",
+    "Direccion": "AV. VICTOR RAUL 452 - LA LIBERTAD-VIRU-CHAO"
+  },
+  {
+    "Id": "8",
+    "Nombre": "CHEPEN",
+    "Direccion": "PREDIO PAMPAS DE SAN JUAN SUB LOTE 2 SN - LA LIBERTAD-CHEPEN-CHEPEN"
+  },
+  {
+    "Id": "2",
+    "Nombre": "CHICLAYO",
+    "Direccion": "AV. BALTA 110 URB. CERCADO - LAMBAYEQUE-CHICLAYO-CHICLAYO"
+  },
+  {
+    "Id": "18",
+    "Nombre": "CHIMBOTE",
+    "Direccion": "Z.I. GRAN TRAPECIO Mz B Lote 1 Int D16 - ANCASH-SANTA-CHIMBOTE"
+  },
+  {
+    "Id": "11",
+    "Nombre": "CHOCOPE",
+    "Direccion": "CAR. PANAMERICANA Mz 2 Lote 28 - LA LIBERTAD-ASCOPE-CHOCOPE"
+  },
+  {
+    "Id": "17",
+    "Nombre": "CRUCE CAJAMARCA",
+    "Direccion": "P.J. PAKATNAMU CAR. EL TRIANGULO C-14 - LA LIBERTAD-PACASMAYO-GUADALUPE"
+  },
+  {
+    "Id": "9",
+    "Nombre": "GUADALUPE",
+    "Direccion": "SEC. GUADALUPE AV. NILA CERRUTI 290 - LA LIBERTAD-PACASMAYO-GUADALUPE"
+  },
+  {
+    "Id": "84",
+    "Nombre": "HUARMEY",
+    "Direccion": "ASENTAMIENTO HUMANO SANTIAGO ANTUNEZ DE MAYOLO MZ.C LT. 3"
+  },
+  {
+    "Id": "15",
+    "Nombre": "JAEN TERMINAL",
+    "Direccion": "TERRAPUERTO NORORIENTAL JAEN - AV. MESONES MURO LOTE 03 (C20) SECTOR ZANJA HONDA, JAEN-JAEN-CAJAMARCA"
+  },
+  {
+    "Id": "3",
+    "Nombre": "LIMA",
+    "Direccion": "CERCADO CAL. HUMBOLDT ALEXANDER VON 109 - LIMA-LIMA-LA VICTORIA"
+  },
+  {
+    "Id": "12",
+    "Nombre": "MANCORA",
+    "Direccion": "AV. GRAU N 600 Mz 66 Lote 01 - PIURA-TALARA-MANCORA"
+  },
+  {
+    "Id": "50",
+    "Nombre": "NUEVO MOCUPE",
+    "Direccion": "C.P. MENOR NUEVO MOCUPE Mz U Lote 14 - LAMBAYEQUE-CHICLAYO-LAGUNAS"
+  },
+  {
+    "Id": "71",
+    "Nombre": "PACANGUILLA",
+    "Direccion": "C.P. PACANGUILLA Mz 7 Lote 08 - LA LIBERTAD-CHEPEN-PACANGA"
+  },
+  {
+    "Id": "7",
+    "Nombre": "PACASMAYO",
+    "Direccion": "Mz B Lote 1 URB. ANDRES RAZURI - LA LIBERTAD-PACASMAYO-PACASMAYO"
+  },
+  {
+    "Id": "10",
+    "Nombre": "PAIJAN",
+    "Direccion": "SECTOR MANCO CAPAC AV. PANAMERICNA NORTE 1338 - LA LIBERTAD-ASCOPE-PAIJAN"
+  },
+  {
+    "Id": "4",
+    "Nombre": "PIURA",
+    "Direccion": "Z.I. II ETAPA AV. PROLONGACION SANCHEZ CERRO Mz 9 Lote S/N - PIURA-PIURA-VEINTISEIS DE OCTUBRE"
+  },
+  {
+    "Id": "25",
+    "Nombre": "PLAZA NORTE (LIMA)",
+    "Direccion": "AV. GERARDO UNGER 6917 Int LB10 - LIMA-LIMA-INDEPENDENCIA"
+  },
+  {
+    "Id": "65",
+    "Nombre": "PUCARA ",
+    "Direccion": "CAR. FERNANDO B. TERRY Km 177 - CAJAMARCA-JAEN-PUCARA"
+  },
+  {
+    "Id": "48",
+    "Nombre": "SAN PEDRO DE LLOC ",
+    "Direccion": "A.H. EL NISPERO PJ. EL NISPERO S/N - LA LIBERTAD-PACASMAYO-SAN PEDRO DE LLOC"
+  },
+  {
+    "Id": "6",
+    "Nombre": "TUMBES",
+    "Direccion": "AV. TUMBES 369 - TUMBES-TUMBES-TUMBES"
+  }
+]

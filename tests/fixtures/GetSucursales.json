@@ -1,0 +1,137 @@
+[
+  {
+    "Id": "001",
+    "Nombre": "TRUJILLO",
+    "Direccion": "AV. TUPAC AMARU 185 URB. HUERTA GRANDE - LA LIBERTAD-TRUJILLO-TRUJILLO"
+  },
+  {
+    "Id": "002",
+    "Nombre": "CHICLAYO",
+    "Direccion": "AV. BALTA 110 URB. CERCADO - LAMBAYEQUE-CHICLAYO-CHICLAYO"
+  },
+  {
+    "Id": "003",
+    "Nombre": "LIMA",
+    "Direccion": "CERCADO CAL. HUMBOLDT ALEXANDER VON 109 - LIMA-LIMA-LA VICTORIA"
+  },
+  {
+    "Id": "004",
+    "Nombre": "PIURA",
+    "Direccion": "Z.I. II ETAPA AV. PROLONGACION SANCHEZ CERRO Mz 9 Lote S/N - PIURA-PIURA-VEINTISEIS DE OCTUBRE"
+  },
+  {
+    "Id": "005",
+    "Nombre": "CAJAMARCA",
+    "Direccion": "AV. ATAHUALPA 606 - CAJAMARCA-CAJAMARCA-CAJAMARCA"
+  },
+  {
+    "Id": "006",
+    "Nombre": "TUMBES",
+    "Direccion": "AV. TUMBES 369 - TUMBES-TUMBES-TUMBES"
+  },
+  {
+    "Id": "015",
+    "Nombre": "JAEN TERMINAL",
+    "Direccion": "TERRAPUERTO NORORIENTAL JAEN - AV. MESONES MURO LOTE 03 (C20) SECTOR ZANJA HONDA, JAEN-JAEN-CAJAMARCA"
+  },
+  {
+    "Id": "018",
+    "Nombre": "CHIMBOTE",
+    "Direccion": "Z.I. GRAN TRAPECIO Mz B Lote 1 Int D16 - ANCASH-SANTA-CHIMBOTE"
+  },
+  {
+    "Id": "025",
+    "Nombre": "PLAZA NORTE (LIMA)",
+    "Direccion": "AV. GERARDO UNGER 6917 Int LB10 - LIMA-LIMA-INDEPENDENCIA"
+  },
+  {
+    "Id": "078",
+    "Nombre": "PIURA TERMINAL GECHISA",
+    "Direccion": "Z.I. II ETAPA AV. PROLONGACION SANCHEZ CERRO Mz 9 Lote S/N - PIURA-PIURA-VEINTISEIS DE OCTUBRE"
+  },
+  {
+    "Id": "024",
+    "Nombre": "CHAO",
+    "Direccion": "AV. VICTOR RAUL 452 - LA LIBERTAD-VIRU-CHAO"
+  },
+  {
+    "Id": "008",
+    "Nombre": "CHEPEN",
+    "Direccion": "PREDIO PAMPAS DE SAN JUAN SUB LOTE 2 SN - LA LIBERTAD-CHEPEN-CHEPEN"
+  },
+  {
+    "Id": "011",
+    "Nombre": "CHOCOPE",
+    "Direccion": "CAR. PANAMERICANA Mz 2 Lote 28 - LA LIBERTAD-ASCOPE-CHOCOPE"
+  },
+  {
+    "Id": "017",
+    "Nombre": "CRUCE CAJAMARCA",
+    "Direccion": "P.J. PAKATNAMU CAR. EL TRIANGULO C-14 - LA LIBERTAD-PACASMAYO-GUADALUPE"
+  },
+  {
+    "Id": "009",
+    "Nombre": "GUADALUPE",
+    "Direccion": "SEC. GUADALUPE AV. NILA CERRUTI 290 - LA LIBERTAD-PACASMAYO-GUADALUPE"
+  },
+  {
+    "Id": "084",
+    "Nombre": "HUARMEY",
+    "Direccion": "ASENTAMIENTO HUMANO SANTIAGO ANTUNEZ DE MAYOLO MZ.C LT. 3"
+  },
+  {
+    "Id": "083",
+    "Nombre": "LIMA PUENTE PIEDRA",
+    "Direccion": "AV. PUENTE PIEDRA MZ. Y LT. 7 ZONA 03 SECTOR 09"
+  },
+  {
+    "Id": "012",
+    "Nombre": "MANCORA",
+    "Direccion": "AV. GRAU N 600 Mz 66 Lote 01 - PIURA-TALARA-MANCORA"
+  },
+  {
+    "Id": "034",
+    "Nombre": "MOCHE (TRUJILLO)",
+    "Direccion": "C.P. CURVA DE SUN AV. LA MARINA S/N - LA LIBERTAD-TRUJILLO-MOCHE"
+  },
+  {
+    "Id": "050",
+    "Nombre": "NUEVO MOCUPE",
+    "Direccion": "C.P. MENOR NUEVO MOCUPE Mz U Lote 14 - LAMBAYEQUE-CHICLAYO-LAGUNAS"
+  },
+  {
+    "Id": "027",
+    "Nombre": "OVALO MOCHICA (TRUJILLO)",
+    "Direccion": "AV. NICOLAS DE PIEROLA 05 URB. MOCHICA - LA LIBERTAD-TRUJILLO-TRUJILLO"
+  },
+  {
+    "Id": "071",
+    "Nombre": "PACANGUILLA",
+    "Direccion": "C.P. PACANGUILLA Mz 7 Lote 08 - LA LIBERTAD-CHEPEN-PACANGA"
+  },
+  {
+    "Id": "007",
+    "Nombre": "PACASMAYO",
+    "Direccion": "Mz B Lote 1 URB. ANDRES RAZURI - LA LIBERTAD-PACASMAYO-PACASMAYO"
+  },
+  {
+    "Id": "010",
+    "Nombre": "PAIJAN",
+    "Direccion": "SECTOR MANCO CAPAC AV. PANAMERICNA NORTE 1338 - LA LIBERTAD-ASCOPE-PAIJAN"
+  },
+  {
+    "Id": "065",
+    "Nombre": "PUCARA ",
+    "Direccion": "CAR. FERNANDO B. TERRY Km 177 - CAJAMARCA-JAEN-PUCARA"
+  },
+  {
+    "Id": "048",
+    "Nombre": "SAN PEDRO DE LLOC ",
+    "Direccion": "A.H. EL NISPERO PJ. EL NISPERO S/N - LA LIBERTAD-PACASMAYO-SAN PEDRO DE LLOC"
+  },
+  {
+    "Id": "066",
+    "Nombre": "WICHANZAO",
+    "Direccion": "SEC. 03 WICHANZAO Mz 14 Lote 24 - LA LIBERTAD-TRUJILLO-LA ESPERANZA"
+  }
+]

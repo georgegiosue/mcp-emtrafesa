@@ -1,0 +1,36 @@
+[
+  {
+    "Programacion_Id": 2026021992,
+    "Bus_Croquis_Id": "Z2",
+    "Embarque_FechaHora": "/Date(1774224000000)/",
+    "Desembarque_FechaHora": "/Date(1774257600000)/",
+    "Embarque_FechaHora_Str": "07:00 PM",
+    "Desembarque_FechaHora_Str": "04:20 AM",
+    "EsDirecto": false,
+    "EsDirecto_Str": "Escalas",
+    "Servicio_Descripcion": "C - Fenix",
+    "Bus_AsientosLibres": 1,
+    "Bus_Pisos": 2,
+    "Precio_Piso1": 100.0,
+    "Precio_Piso2": 75.0,
+    "Embarque_SoloEquipajeDeMano": false,
+    "Embarque_LaHoraEsReferencial": false,
+    "ArrIncremento": [
+      {
+        "IdPlanoBus": "D2",
+        "NumeroAsiento": 63,
+        "Nivel": 1
+      },
+      {
+        "IdPlanoBus": "D2",
+        "NumeroAsiento": 66,
+        "Nivel": 1
+      }
+    ],
+    "ObjRestriccion": {
+      "Origen": "001",
+      "Aplica": true,
+      "IdProgramacion": "2026021992"
+    }
+  }
+]

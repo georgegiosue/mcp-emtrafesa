@@ -43,7 +43,8 @@
     "format": "bunx biome check --write",
     "prepare": "husky",
     "prepublishOnly": "bun run build",
-    "inspect": "bunx @modelcontextprotocol/inspector bun src/index.ts"
+    "inspect": "bunx @modelcontextprotocol/inspector bun src/index.ts",
+    "test": "bun test"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",

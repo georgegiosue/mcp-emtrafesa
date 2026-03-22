@@ -1,0 +1,18 @@
+[
+  {
+    "Pregunta": "Cómo sacar pasajes para menores de Edad",
+    "Respuesta": "Los mayores de 5 años viajarán en su propio asiento y pagarán su pasaje. Todo menor de edad debe viajar acompañado de su o sus padres u otra persona adulta plenamente identificada. Al  momento  del  embarque se debe presentar el DNI del  menor o su acta de nacimiento y la autorización notarial o judicial de viaje cuando  corresponda; caso contrario, no podrá realizar el viaje y perderá el valor del pasaje."
+  },
+  {
+    "Pregunta": "Puedo transportar animales",
+    "Respuesta": "El transporte de animales solo se realizará como encomiendas en jaulas, canil y galponeras, única y exclusivamente bajo responsabilidad del pasajero así como la autorización requerida por Ley; siempre y cuando no constituya un riesgo o peligro para la empresa; y, tendrá un costo adicional. La empresa no se responsabiliza por la vida de los animales."
+  },
+  {
+    "Pregunta": "Cómo pago a través de internet",
+    "Respuesta": "Puedes realizar tus pagos con cualquier tarjeta de crédito o débito afiliada a la red de Visa y MasterCard, desde la comodidad de tu hogar en tu laptop o desde tu Smartphone"
+  },
+  {
+    "Pregunta": "¿Cómo obtener mis pasajes con Factura?",
+    "Respuesta": "Al momento de \"Registrar los datos del pasajero\" debe seleccionar \"Requiere factura\",y se desplegara las casillas de ingreso de RUC y Razón Social.<br>Esta acción debe ser realizada por cada pasajero que se desee se emita factura.<br>También en el paso previo al pago \"DATOS DEL ADQUIRIENTE O USUARIO\" se puede ingresar con \"Requiere factura\" si desea que la comisión por compra web sea emitida con factura."
+  }
+]
