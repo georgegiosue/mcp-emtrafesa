@@ -4,7 +4,7 @@ import { withRepo } from "./helpers";
 
 describe("get-arrival-terminals", () => {
   it("passes departureTerminalId to repo and returns JSON text", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getArrivalTerminalsByDepartureTerminal: mock(() =>
         Promise.resolve(fixtures.arrivalTerminals),
       ),
@@ -25,7 +25,7 @@ describe("get-arrival-terminals", () => {
   });
 
   it("returns error message when repository throws", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getArrivalTerminalsByDepartureTerminal: mock(() =>
         Promise.reject(new Error("not found")),
       ),

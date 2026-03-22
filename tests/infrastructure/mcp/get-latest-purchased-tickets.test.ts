@@ -4,7 +4,7 @@ import { withRepo } from "./helpers";
 
 describe("get-latest-purchased-tickets", () => {
   it("forwards DNI and email to repo and returns JSON text", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getLatestPurchaseTickets: mock(() => Promise.resolve(fixtures.tickets)),
     });
 
@@ -22,7 +22,7 @@ describe("get-latest-purchased-tickets", () => {
   });
 
   it("returns error message when repository throws", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getLatestPurchaseTickets: mock(() =>
         Promise.reject(new Error("invalid credentials")),
       ),

@@ -7,7 +7,7 @@ const ticketCode = fixtures.tickets[0].ticketsCodes[0];
 describe("get-ticket-pdf", () => {
   it("returns a resource with correct uri, mimeType, and base64 blob", async () => {
     const pdfBuffer = Buffer.from("%PDF-1.4 fake content");
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       downloadTicketPDF: mock(() => Promise.resolve(pdfBuffer)),
     });
 
@@ -32,7 +32,7 @@ describe("get-ticket-pdf", () => {
   });
 
   it("returns empty blob string for an empty buffer", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       downloadTicketPDF: mock(() => Promise.resolve(Buffer.from(""))),
     });
 
@@ -47,7 +47,7 @@ describe("get-ticket-pdf", () => {
   });
 
   it("returns error text response when repository throws", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       downloadTicketPDF: mock(() =>
         Promise.reject(new Error("Failed to download ticket PDF: Not Found")),
       ),

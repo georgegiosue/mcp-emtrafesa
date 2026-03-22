@@ -18,9 +18,9 @@ const server = new McpServer({
 });
 
 const repository = new EmtrafesaHttpRepository();
-registerTools(server, repository);
 
 async function main() {
+  await registerTools(server, repository);
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("Emtrafesa MCP Server running on stdio");

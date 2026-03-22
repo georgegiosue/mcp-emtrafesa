@@ -4,7 +4,7 @@ import { withRepo } from "./helpers";
 
 describe("get-frequently-asked-questions", () => {
   it("returns JSON text of FAQs on success", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getFrequentlyAskedQuestions: mock(() => Promise.resolve(fixtures.faqs)),
     });
 
@@ -20,7 +20,7 @@ describe("get-frequently-asked-questions", () => {
   });
 
   it("returns error message when repository throws", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getFrequentlyAskedQuestions: mock(() =>
         Promise.reject(new Error("timeout")),
       ),

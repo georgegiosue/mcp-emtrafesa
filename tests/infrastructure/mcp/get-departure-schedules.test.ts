@@ -4,7 +4,7 @@ import { withRepo } from "./helpers";
 
 describe("get-departure-schedules", () => {
   it("forwards all params including date to repo and returns JSON text", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getDepartureSchedules: mock(() => Promise.resolve(fixtures.schedules)),
     });
 
@@ -27,7 +27,7 @@ describe("get-departure-schedules", () => {
   });
 
   it("passes date as undefined when not provided", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getDepartureSchedules: mock(() => Promise.resolve([])),
     });
 
@@ -44,7 +44,7 @@ describe("get-departure-schedules", () => {
   });
 
   it("returns error message when repository throws", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getDepartureSchedules: mock(() =>
         Promise.reject(new Error("service unavailable")),
       ),

@@ -20,18 +20,20 @@ export function createMockRepository(
   };
 }
 
-export function buildTools(repo: EmtrafesaRepository): Tools {
+export async function buildTools(repo: EmtrafesaRepository): Promise<Tools> {
   const server = new McpServer({ name: "test", version: "0.0.0" });
-  registerTools(server, repo);
+  await registerTools(server, repo);
   return (server as unknown as { _registeredTools: Tools })._registeredTools;
 }
 
 /** Creates a fresh repo+tools pair, optionally overriding specific methods. */
-export function withRepo(overrides: Partial<EmtrafesaRepository> = {}): {
+export async function withRepo(
+  overrides: Partial<EmtrafesaRepository> = {},
+): Promise<{
   repo: EmtrafesaRepository;
   tools: Tools;
-} {
+}> {
   const repo = createMockRepository(overrides);
-  const tools = buildTools(repo);
+  const tools = await buildTools(repo);
   return { repo, tools };
 }

@@ -4,7 +4,7 @@ import { withRepo } from "./helpers";
 
 describe("get-terminals", () => {
   it("returns JSON text of terminals on success", async () => {
-    const { repo, tools } = withRepo({
+    const { repo, tools } = await withRepo({
       getTerminals: mock(() => Promise.resolve(fixtures.terminals)),
     });
 
@@ -18,7 +18,7 @@ describe("get-terminals", () => {
   });
 
   it("returns error message when repository throws an Error", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getTerminals: mock(() => Promise.reject(new Error("network failure"))),
     });
 
@@ -31,7 +31,7 @@ describe("get-terminals", () => {
   });
 
   it("returns 'unknown error' when repository throws a non-Error value", async () => {
-    const { tools } = withRepo({
+    const { tools } = await withRepo({
       getTerminals: mock(() => Promise.reject("oops")),
     });
 
