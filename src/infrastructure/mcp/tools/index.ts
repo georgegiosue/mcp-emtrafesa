@@ -1,44 +1,27 @@
-import { readdirSync } from "node:fs";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { EmtrafesaRepository } from "../../../domain/ports/emtrafesa.repository";
+import { tool as getFrequentlyAskedQuestions } from "./faq/get-frequently-asked-questions/get-frequently-asked-questions";
+import { tool as getDepartureSchedules } from "./schedule/get-departure-schedules/get-departure-schedules";
+import { tool as getArrivalTerminals } from "./terminal/get-arrival-terminals/get-arrival-terminals";
+import { tool as getTerminals } from "./terminal/get-terminals/get-terminals";
+import { tool as getLatestPurchasedTickets } from "./ticket/get-latest-purchased-tickets/get-latest-purchased-tickets";
+import { tool as getTicketPdf } from "./ticket/get-ticket-pdf/get-ticket-pdf";
 import { register, type Tool } from "./tool";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-
-const skip = new Set([
-  "index.ts",
-  "index.js",
-  "tool.ts",
-  "tool.js",
-  "error.ts",
-  "error.js",
-]);
-
-async function scanDir(dir: string, tools: Tool<unknown>[]): Promise<void> {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (entry.isDirectory()) {
-      await scanDir(join(dir, entry.name), tools);
-    } else if (!skip.has(entry.name)) {
-      const mod = await import(join(dir, entry.name));
-      if (mod.tool) tools.push(mod.tool);
-    }
-  }
-}
-
-async function loadTools(): Promise<Tool<unknown>[]> {
-  const tools: Tool<unknown>[] = [];
-  await scanDir(__dirname, tools);
-  return tools;
-}
+const tools = [
+  getTerminals,
+  getArrivalTerminals,
+  getDepartureSchedules,
+  getFrequentlyAskedQuestions,
+  getLatestPurchasedTickets,
+  getTicketPdf,
+];
 
 export async function registerTools(
   server: McpServer,
   repository: EmtrafesaRepository,
 ) {
-  const tools = await loadTools();
-  for (const tool of tools) {
+  for (const tool of tools as Tool<unknown>[]) {
     register(server, repository, tool);
   }
 }

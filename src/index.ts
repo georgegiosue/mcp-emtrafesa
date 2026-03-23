@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { EmtrafesaHttpRepository } from "./infrastructure/http/emtrafesa-http.repository";
 import { registerTools } from "./infrastructure/mcp/tools";
+import { findPackageJson } from "./shared/utils";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const packageJson = JSON.parse(
-  readFileSync(join(__dirname, "../../package.json"), "utf-8"),
-);
+const packageJson = JSON.parse(readFileSync(findPackageJson(__dirname), "utf-8"));
 
 const server = new McpServer({
   name: packageJson.name,
@@ -23,7 +21,11 @@ async function main() {
   await registerTools(server, repository);
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Emtrafesa MCP Server running on stdio");
+  const toolCount = Object.keys((server as unknown as { _registeredTools: Record<string, unknown> })._registeredTools).length;
+  console.error(`[${packageJson.name as string}] v${packageJson.version as string} running`);
+  console.error(`  transport : stdio`);
+  console.error(`  tools     : ${toolCount}`);
+  console.error(`  node      : ${process.version}`);
 }
 
 main().catch((error) => {
