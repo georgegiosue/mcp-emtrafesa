@@ -1,6 +1,6 @@
+import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { describe, expect, test } from "bun:test";
 
 const ROOT = join(import.meta.dir, "../..");
 const ENTRY = join(ROOT, "dist/src/index.js");
