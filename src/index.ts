@@ -9,7 +9,7 @@ import { registerTools } from "./infrastructure/mcp/tools";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const packageJson = JSON.parse(
-  readFileSync(join(__dirname, "../package.json"), "utf-8"),
+  readFileSync(join(__dirname, "../../package.json"), "utf-8"),
 );
 
 const server = new McpServer({
