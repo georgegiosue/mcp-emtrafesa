@@ -1,2 +1,4 @@
 #!/usr/bin/env sh
 bun run format
+bun run build
+bun test
