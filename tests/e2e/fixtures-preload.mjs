@@ -5,7 +5,7 @@
  */
 
 import { readFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 if (process.env.MCP_TEST_MOCK === "1") {
@@ -28,7 +28,9 @@ if (process.env.MCP_TEST_MOCK === "1") {
     const u = url.toString();
 
     if (u.includes("GetSucursalesDestino")) {
-      return Promise.resolve(mockResponse(read("GetSucursalesDestino_001.json")));
+      return Promise.resolve(
+        mockResponse(read("GetSucursalesDestino_001.json")),
+      );
     }
     if (u.includes("GetSucursales")) {
       return Promise.resolve(mockResponse(read("GetSucursales.json")));
@@ -40,7 +42,9 @@ if (process.env.MCP_TEST_MOCK === "1") {
       return Promise.resolve(mockResponse(read("GetItinerario_001_003.json")));
     }
     if (u.includes("PostConsulta")) {
-      return Promise.resolve(mockResponse(read("PostConsulta.html"), "text/html"));
+      return Promise.resolve(
+        mockResponse(read("PostConsulta.html"), "text/html"),
+      );
     }
     if (u.includes("ComprobanteDescarga")) {
       return Promise.resolve({

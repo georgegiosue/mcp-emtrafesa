@@ -52,7 +52,9 @@ describe("MCP server E2E", () => {
   });
 
   it("server name and version match package.json", () => {
-    const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8")) as {
+    const pkg = JSON.parse(
+      readFileSync(join(ROOT, "package.json"), "utf-8"),
+    ) as {
       name: string;
       version: string;
     };
@@ -81,7 +83,10 @@ describe("MCP server E2E", () => {
   });
 
   it("get-terminals returns a non-empty array of terminals", async () => {
-    const result = await client.callTool({ name: "get-terminals", arguments: {} });
+    const result = await client.callTool({
+      name: "get-terminals",
+      arguments: {},
+    });
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
