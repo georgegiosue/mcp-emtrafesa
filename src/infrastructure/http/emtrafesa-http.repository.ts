@@ -2,9 +2,13 @@ import * as cheerio from "cheerio";
 import { api } from "../../config/api";
 import type {
   DepartureSchedule,
+  DepartureScheduleParams,
+  DepartureTerminalParams,
   FAQ,
   Terminal,
   Ticket,
+  TicketDownloadParams,
+  TicketLookupParams,
 } from "../../domain/models/emtrafesa.model";
 import type { EmtrafesaRepository } from "../../domain/ports/emtrafesa.repository";
 
@@ -26,9 +30,9 @@ export class EmtrafesaHttpRepository implements EmtrafesaRepository {
     return (await req.json()) as FAQ[];
   }
 
-  async getArrivalTerminalsByDepartureTerminal(params: {
-    departureTerminalId: string;
-  }): Promise<Terminal[]> {
+  async getArrivalTerminalsByDepartureTerminal(
+    params: DepartureTerminalParams,
+  ): Promise<Terminal[]> {
     const req = await fetch(
       `https://emtrafesa.pe/Home/GetSucursalesDestino?origen=${params.departureTerminalId}`,
       { headers: api.headers },
@@ -36,11 +40,9 @@ export class EmtrafesaHttpRepository implements EmtrafesaRepository {
     return (await req.json()) as Terminal[];
   }
 
-  async getDepartureSchedules(params: {
-    departureTerminalId: string;
-    arrivalTerminalId: string;
-    date?: string;
-  }): Promise<DepartureSchedule[]> {
+  async getDepartureSchedules(
+    params: DepartureScheduleParams,
+  ): Promise<DepartureSchedule[]> {
     const formattedDate =
       params.date ||
       new Intl.DateTimeFormat("es-PE", {
@@ -63,10 +65,9 @@ export class EmtrafesaHttpRepository implements EmtrafesaRepository {
     return (await req.json()) as DepartureSchedule[];
   }
 
-  async getLatestPurchaseTickets(params: {
-    DNI: string;
-    email: string;
-  }): Promise<Ticket[]> {
+  async getLatestPurchaseTickets(
+    params: TicketLookupParams,
+  ): Promise<Ticket[]> {
     const body = new URLSearchParams();
     body.append("Dni", params.DNI);
     body.append("Correo", params.email);
@@ -113,7 +114,7 @@ export class EmtrafesaHttpRepository implements EmtrafesaRepository {
       .get();
   }
 
-  async downloadTicketPDF(params: { ticketCode: string }): Promise<Buffer> {
+  async downloadTicketPDF(params: TicketDownloadParams): Promise<Buffer> {
     const req = await fetch(
       `https://www.emtrafesa.pe/Home/ComprobanteDescarga?Boletos=3,BP01,${params.ticketCode}`,
       { headers: api.headers },

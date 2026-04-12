@@ -19,6 +19,25 @@ export type Ticket = {
   destination: string | undefined;
 };
 
+export type DepartureTerminalParams = {
+  departureTerminalId: string;
+};
+
+export type DepartureScheduleParams = {
+  departureTerminalId: string;
+  arrivalTerminalId: string;
+  date?: string;
+};
+
+export type TicketLookupParams = {
+  DNI: string;
+  email: string;
+};
+
+export type TicketDownloadParams = {
+  ticketCode: string;
+};
+
 export type DepartureSchedule = {
   Programacion_Id: number;
   Bus_Croquis_Id: string;

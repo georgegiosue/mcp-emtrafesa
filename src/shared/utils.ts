@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import type { PackageJson } from "../domain/models/package.model";
 
 export function bufferToBase64(buffer: Buffer): string {
   return buffer.toString("base64");
 }
 
-export function findPackageJson(dir: string): string {
+function findPackageJsonPath(dir: string): string {
   const candidate = join(dir, "package.json");
   try {
     readFileSync(candidate);
@@ -13,6 +14,11 @@ export function findPackageJson(dir: string): string {
   } catch {
     const parent = join(dir, "..");
     if (parent === dir) throw new Error("package.json not found");
-    return findPackageJson(parent);
+    return findPackageJsonPath(parent);
   }
+}
+
+export function loadPackageJson(dir: string): PackageJson {
+  const path = findPackageJsonPath(dir);
+  return JSON.parse(readFileSync(path, "utf-8"));
 }
