@@ -1,8 +1,10 @@
 import type {
-  DepartureSchedule,
-  DepartureScheduleParams,
-  DepartureTerminalParams,
+  DestinationsParams,
   FAQ,
+  Schedule,
+  ScheduleParams,
+  SeatAvailability,
+  SeatAvailabilityParams,
   Terminal,
   Ticket,
   TicketDownloadParams,
@@ -12,12 +14,11 @@ import type {
 export interface EmtrafesaRepository {
   getTerminals(): Promise<Terminal[]>;
   getFrequentlyAskedQuestions(): Promise<FAQ[]>;
-  getArrivalTerminalsByDepartureTerminal(
-    params: DepartureTerminalParams,
-  ): Promise<Terminal[]>;
-  getDepartureSchedules(
-    params: DepartureScheduleParams,
-  ): Promise<DepartureSchedule[]>;
-  getLatestPurchaseTickets(params: TicketLookupParams): Promise<Ticket[]>;
-  downloadTicketPDF(params: TicketDownloadParams): Promise<Buffer>;
+  getDestinations(params: DestinationsParams): Promise<Terminal[]>;
+  getDepartureSchedules(params: ScheduleParams): Promise<Schedule[]>;
+  getSeatAvailability(
+    params: SeatAvailabilityParams,
+  ): Promise<SeatAvailability>;
+  getPurchasedTickets(params: TicketLookupParams): Promise<Ticket[]>;
+  getTicketPdf(params: TicketDownloadParams): Promise<Buffer>;
 }

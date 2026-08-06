@@ -44,3 +44,8 @@ export function mockFetchError(
     new Response(null, { status, statusText }),
   );
 }
+
+/** Simulates a transport-level failure: a timeout abort, DNS error, refused connection. */
+export function mockFetchRejecting(error: Error): ReturnType<typeof spyOn> {
+  return spyOn(globalThis, "fetch").mockRejectedValue(error);
+}

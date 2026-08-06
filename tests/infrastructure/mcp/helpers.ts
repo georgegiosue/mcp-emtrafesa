@@ -1,26 +1,29 @@
 import { mock } from "bun:test";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from "@modelcontextprotocol/server";
 import type { EmtrafesaRepository } from "../../../src/domain/ports/emtrafesa.repository";
 import { registerTools } from "../../../src/infrastructure/mcp/tools";
 
 type ToolHandler = (...args: unknown[]) => Promise<unknown>;
 export type Tools = Record<string, { handler: ToolHandler }>;
 
-export function createMockRepository(
+function createMockRepository(
   overrides: Partial<EmtrafesaRepository> = {},
 ): EmtrafesaRepository {
   return {
     getTerminals: mock(() => Promise.resolve([])),
     getFrequentlyAskedQuestions: mock(() => Promise.resolve([])),
-    getArrivalTerminalsByDepartureTerminal: mock(() => Promise.resolve([])),
+    getDestinations: mock(() => Promise.resolve([])),
     getDepartureSchedules: mock(() => Promise.resolve([])),
-    getLatestPurchaseTickets: mock(() => Promise.resolve([])),
-    downloadTicketPDF: mock(() => Promise.resolve(Buffer.from(""))),
+    getSeatAvailability: mock(() =>
+      Promise.resolve({ totalSeats: 0, availableSeats: 0, available: [] }),
+    ),
+    getPurchasedTickets: mock(() => Promise.resolve([])),
+    getTicketPdf: mock(() => Promise.resolve(Buffer.from(""))),
     ...overrides,
   };
 }
 
-export async function buildTools(repo: EmtrafesaRepository): Promise<Tools> {
+async function buildTools(repo: EmtrafesaRepository): Promise<Tools> {
   const server = new McpServer({ name: "test", version: "0.0.0" });
   await registerTools(server, repo);
   return (server as unknown as { _registeredTools: Tools })._registeredTools;

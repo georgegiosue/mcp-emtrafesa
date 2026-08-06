@@ -1,19 +1,29 @@
 import { describe, expect, it, mock } from "bun:test";
-import { fixtures } from "../../helpers/fixtures";
+import { expected } from "../../helpers/fixtures";
 import { withRepo } from "./helpers";
 
 describe("get-terminals", () => {
   it("returns JSON text of terminals on success", async () => {
     const { repo, tools } = await withRepo({
-      getTerminals: mock(() => Promise.resolve(fixtures.terminals)),
+      getTerminals: mock(() => Promise.resolve([expected.firstTerminal])),
     });
 
     const result = (await tools["get-terminals"].handler({})) as {
       content: { type: string; text: string }[];
+      structuredContent: unknown;
     };
 
     expect(result.content[0].type).toBe("text");
-    expect(result.content[0].text).toBe(JSON.stringify(fixtures.terminals));
+    const published = {
+      name: expected.firstTerminal.name,
+      address: expected.firstTerminal.address,
+    };
+
+    expect(result.structuredContent).toEqual({ terminals: [published] });
+    expect(result.content[0].text).toBe(
+      JSON.stringify({ terminals: [published] }),
+    );
+    expect(result.content[0].text).not.toContain('"id"');
     expect(repo.getTerminals).toHaveBeenCalledTimes(1);
   });
 
