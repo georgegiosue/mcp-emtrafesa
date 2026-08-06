@@ -1,14 +1,14 @@
 import { describe, expect, it, mock } from "bun:test";
-import { fixtures } from "../../helpers/fixtures";
+import { expected } from "../../helpers/fixtures";
 import { withRepo } from "./helpers";
 
-const ticketCode = fixtures.tickets[0].ticketsCodes[0];
+const ticketCode = expected.tickets[0].ticketsCodes[0];
 
 describe("get-ticket-pdf", () => {
   it("returns a resource with correct uri, mimeType, and base64 blob", async () => {
     const pdfBuffer = Buffer.from("%PDF-1.4 fake content");
     const { repo, tools } = await withRepo({
-      downloadTicketPDF: mock(() => Promise.resolve(pdfBuffer)),
+      getTicketPdf: mock(() => Promise.resolve(pdfBuffer)),
     });
 
     const result = (await tools["get-ticket-pdf"].handler(
@@ -28,12 +28,12 @@ describe("get-ticket-pdf", () => {
     expect(result.content[0].resource.name).toBe(`Ticket ${ticketCode}`);
     expect(result.content[0].resource.mimeType).toBe("application/pdf");
     expect(result.content[0].resource.blob).toBe(pdfBuffer.toString("base64"));
-    expect(repo.downloadTicketPDF).toHaveBeenCalledWith({ ticketCode });
+    expect(repo.getTicketPdf).toHaveBeenCalledWith({ ticketCode });
   });
 
   it("returns empty blob string for an empty buffer", async () => {
     const { tools } = await withRepo({
-      downloadTicketPDF: mock(() => Promise.resolve(Buffer.from(""))),
+      getTicketPdf: mock(() => Promise.resolve(Buffer.from(""))),
     });
 
     const result = (await tools["get-ticket-pdf"].handler(
@@ -48,7 +48,7 @@ describe("get-ticket-pdf", () => {
 
   it("returns error text response when repository throws", async () => {
     const { tools } = await withRepo({
-      downloadTicketPDF: mock(() =>
+      getTicketPdf: mock(() =>
         Promise.reject(new Error("Failed to download ticket PDF: Not Found")),
       ),
     });

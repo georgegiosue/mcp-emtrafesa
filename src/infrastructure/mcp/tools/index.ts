@@ -1,27 +1,28 @@
-import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/server";
 import type { EmtrafesaRepository } from "../../../domain/ports/emtrafesa.repository";
-import { tool as getFrequentlyAskedQuestions } from "./faq/get-frequently-asked-questions/get-frequently-asked-questions";
-import { tool as getDepartureSchedules } from "./schedule/get-departure-schedules/get-departure-schedules";
-import { tool as getArrivalTerminals } from "./terminal/get-arrival-terminals/get-arrival-terminals";
-import { tool as getTerminals } from "./terminal/get-terminals/get-terminals";
-import { tool as getLatestPurchasedTickets } from "./ticket/get-latest-purchased-tickets/get-latest-purchased-tickets";
-import { tool as getTicketPdf } from "./ticket/get-ticket-pdf/get-ticket-pdf";
-import { register, type Tool } from "./tool";
+import { register as getFrequentlyAskedQuestions } from "./faq/get-frequently-asked-questions";
+import { register as getAvailableSeats } from "./schedule/get-available-seats";
+import { register as getDepartureSchedules } from "./schedule/get-departure-schedules";
+import { register as getArrivalTerminals } from "./terminal/get-arrival-terminals";
+import { register as getTerminals } from "./terminal/get-terminals";
+import { register as getLatestPurchasedTickets } from "./ticket/get-latest-purchased-tickets";
+import { register as getTicketPdf } from "./ticket/get-ticket-pdf";
 
 const tools = [
   getTerminals,
   getArrivalTerminals,
   getDepartureSchedules,
+  getAvailableSeats,
   getFrequentlyAskedQuestions,
   getLatestPurchasedTickets,
   getTicketPdf,
 ];
 
-export async function registerTools(
+export function registerTools(
   server: McpServer,
   repository: EmtrafesaRepository,
-) {
-  for (const tool of tools as Tool<unknown>[]) {
-    register(server, repository, tool);
+): void {
+  for (const register of tools) {
+    register(server, repository);
   }
 }

@@ -5,204 +5,68 @@
 [![CI](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml/badge.svg)](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/georgegiosue/mcp-emtrafesa/branch/master/graph/badge.svg)](https://codecov.io/gh/georgegiosue/mcp-emtrafesa)
 [![NPM Version](https://img.shields.io/npm/v/mcp-emtrafesa?style=flat&logo=npm&logoColor=red)](https://www.npmjs.com/package/mcp-emtrafesa)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Bun](https://img.shields.io/badge/Bun-000000?style=flat&logo=bun&logoColor=white)](https://bun.sh)
 [![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blue)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- **English**: [README.md](README.md) (You are here)
-- **Español**: [README.es.md](README.es.md)
+**English** · [Español](README.es.md)
 
-**MCP Emtrafesa** is a Model Context Protocol server that provides AI assistants with seamless access to Peru's Emtrafesa bus transportation system. Query terminals, schedules, tickets, and FAQs through standardized MCP tools.
+## Install
 
----
-
-## What can you do with this MCP?
-
-- **Find bus terminals** across Peru
-- **Check schedules** between any two cities
-- **Look up your purchased tickets** using your DNI and email
-- **Download your ticket as PDF** for printing or sharing
-- **Get answers** to frequently asked questions
-
----
-
-## Quick Start
-
-### Option 1: Claude Desktop (Recommended)
-
-Open your Claude Desktop configuration file:
-
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-Add the following entry:
-
-```json
-{
-  "mcpServers": {
-    "mcp-emtrafesa": {
-      "command": "npx",
-      "args": ["mcp-emtrafesa@latest"]
-    }
-  }
-}
-```
-
-Restart Claude Desktop. You'll see an MCP indicator in the bottom-right corner of the chat input when the server is connected.
-
-### Option 2: Clone and run locally
+**Claude Code**
 
 ```bash
-# Clone the repository
-git clone https://github.com/georgegiosue/mcp-emtrafesa.git
-cd mcp-emtrafesa
-
-# Install dependencies
-bun install
+claude mcp add emtrafesa -- npx -y mcp-emtrafesa@latest
 ```
 
-Then point your MCP client to the local server:
+**Claude Desktop** — add to `claude_desktop_config.json` and restart:
 
 ```json
 {
   "mcpServers": {
-    "mcp-emtrafesa": {
-      "command": "bun",
-      "args": ["/absolute/path/to/mcp-emtrafesa/src/index.ts"]
+    "emtrafesa": {
+      "command": "npx",
+      "args": ["-y", "mcp-emtrafesa@latest"]
     }
   }
 }
 ```
 
-> **Tip:** Use the MCP Inspector for debugging: `bunx @modelcontextprotocol/inspector bun src/index.ts`
+## What it looks like
 
----
+> **You:** I need to get from Chiclayo to Trujillo tonight. What are my options and how much?
 
-## Available Tools
+> **Claude:** There are 10 departures tonight, but everything from 5:30 PM onward is sold out. The cheapest was S/ 22 — it makes stops and arrives 9:45 PM. For S/ 35 there was a direct one arriving 9:00 PM. Want me to check tomorrow?
 
-| Tool | Description | Parameters |
-|------|-------------|------------|
-| `get-terminals` | Get all bus terminals in Peru | None |
-| `get-arrival-terminals` | Get destination terminals for a given origin | `departureTerminalId` |
-| `get-departure-schedules` | Get schedules between two terminals | `departureTerminalId`, `arrivalTerminalId`, `date?` |
-| `get-latest-purchased-tickets` | Search your purchased tickets | `DNI`, `email` |
-| `get-ticket-pdf` | Download your ticket as a PDF file | `ticketCode` |
-| `get-frequently-asked-questions` | Get FAQs about the service | None |
+> **You:** Check tomorrow, and I want a lower-deck seat.
 
----
+> **Claude:** Tomorrow's 5:30 PM has 48 of 60 seats free, but only 5 on the lower deck: 64, 65, 67, 68 and 70.
 
-## Usage Examples
+> **You:** Pull up the tickets I already bought — DNI 12345678, email me@example.com.
 
-Once connected, you can ask Claude naturally:
+> **Claude:** One purchase on file: two seats, Trujillo → Lima, S/ 100. Want the PDFs?
 
-- *"What bus terminals does Emtrafesa have?"*
-- *"What schedules are available from Chiclayo to Trujillo on 14/07/2025?"*
-- *"Look up my tickets with DNI 12345678 and email user@example.com"*
-- *"Download the PDF for ticket BP01-123456"*
+## Tools
 
----
+| Tool | Does | Takes |
+|------|------|-------|
+| `get-terminals` | Every Emtrafesa terminal in Peru | — |
+| `get-arrival-terminals` | Where you can travel to from a city | `from` |
+| `get-departure-schedules` | Departures between two cities | `from`, `to`, `date?` |
+| `get-available-seats` | Which seats are free on one departure | `from`, `to`, `scheduleId` |
+| `get-latest-purchased-tickets` | Your purchases | `DNI`, `email` |
+| `get-ticket-pdf` | One ticket as a PDF | `ticketCode` |
+| `get-frequently-asked-questions` | Luggage, minors, seniors, service rules | — |
 
-## Requirements
-
-- [Bun](https://bun.sh) v1.2.10+ or Node.js v18+
-- An MCP-compatible client (Claude Desktop, etc.)
-
----
-
-## Project Structure
-
-```
-mcp-emtrafesa/
-├── src/
-│   ├── config/                        # API configuration
-│   ├── domain/
-│   │   ├── models/                    # Domain model interfaces
-│   │   └── ports/                     # Repository interface (contract)
-│   ├── infrastructure/
-│   │   ├── http/                      # HTTP repository implementation
-│   │   └── mcp/
-│   │       └── tools/
-│   │           ├── index.ts           # Auto-discovers and registers all tools
-│   │           ├── tool.ts            # Tool interface + register() helper
-│   │           ├── error.ts           # Shared errorResponse()
-│   │           ├── faq/
-│   │           │   └── get-frequently-asked-questions/
-│   │           │       ├── constants.ts
-│   │           │       └── get-frequently-asked-questions.ts
-│   │           ├── schedule/
-│   │           │   └── get-departure-schedules/
-│   │           │       ├── constants.ts
-│   │           │       ├── schema.ts
-│   │           │       ├── types.ts
-│   │           │       └── get-departure-schedules.ts
-│   │           ├── terminal/
-│   │           │   ├── get-terminals/
-│   │           │   │   ├── constants.ts
-│   │           │   │   └── get-terminals.ts
-│   │           │   └── get-arrival-terminals/
-│   │           │       ├── constants.ts
-│   │           │       ├── schema.ts
-│   │           │       ├── types.ts
-│   │           │       └── get-arrival-terminals.ts
-│   │           └── ticket/
-│   │               ├── get-latest-purchased-tickets/
-│   │               │   ├── constants.ts
-│   │               │   ├── schema.ts
-│   │               │   ├── types.ts
-│   │               │   └── get-latest-purchased-tickets.ts
-│   │               └── get-ticket-pdf/
-│   │                   ├── constants.ts
-│   │                   ├── schema.ts
-│   │                   ├── types.ts
-│   │                   └── get-ticket-pdf.ts
-│   ├── shared/                        # Shared utilities
-│   └── index.ts                       # MCP server entry point
-├── package.json
-└── tsconfig.json
-```
-
----
+Every field a tool returns carries its own description in the advertised `outputSchema`, so Claude knows what it is reading without you explaining anything. Omitting `date` means today in Peru; the format is `DD/MM/YYYY`.
 
 ## Development
 
 ```bash
-# Format code
-bun run format
-
-# Check formatting
-bunx biome check
+bun install
+bun test
+bunx @modelcontextprotocol/inspector bun src/index.ts   # poke at the tools directly
 ```
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Format your code (`bun run format`)
-4. Commit your changes
-5. Open a Pull Request
-
----
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-## Acknowledgments
-
-- [Emtrafesa](https://emtrafesa.pe) - Transportation API provider
-- [Model Context Protocol](https://modelcontextprotocol.io) - MCP specification
-- [@tecncr](https://github.com/tecncr) - API endpoint insights
-- [Bun](https://bun.sh) - Fast JavaScript runtime
-
----
-
-## Support
-
-- [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues)
-- [GitHub Discussions](https://github.com/georgegiosue/mcp-emtrafesa/discussions)
-- Email: [peraldonamoc@gmail.com](mailto:peraldonamoc@gmail.com)
+MIT — see [LICENSE](LICENSE). Endpoint insights from [@tecncr](https://github.com/tecncr). Issues and questions: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues).

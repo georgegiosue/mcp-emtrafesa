@@ -1,130 +1,102 @@
-import * as cheerio from "cheerio";
 import { api } from "../../config/api";
 import type {
-  DepartureSchedule,
-  DepartureScheduleParams,
-  DepartureTerminalParams,
+  DestinationsParams,
   FAQ,
+  Schedule,
+  ScheduleParams,
+  SeatAvailability,
+  SeatAvailabilityParams,
   Terminal,
   Ticket,
   TicketDownloadParams,
   TicketLookupParams,
 } from "../../domain/models/emtrafesa.model";
 import type { EmtrafesaRepository } from "../../domain/ports/emtrafesa.repository";
+import {
+  parseFaqs,
+  parseSchedules,
+  parseSeatAvailability,
+  parseTerminals,
+} from "./emtrafesa.wire";
+import { request } from "./http-client";
+import { todayInPeru } from "./peru-date";
+import { parseTickets } from "./ticket-html.parser";
+import { readTicketPdf } from "./ticket-pdf";
 
 export class EmtrafesaHttpRepository implements EmtrafesaRepository {
   async getTerminals(): Promise<Terminal[]> {
-    const req = await fetch("https://emtrafesa.pe/Home/GetSucursales", {
-      headers: api.headers,
-    });
-    return (await req.json()) as Terminal[];
+    const response = await request(api.endpoints.terminals);
+
+    return parseTerminals(await response.json());
   }
 
   async getFrequentlyAskedQuestions(): Promise<FAQ[]> {
-    const req = await fetch(
-      "https://emtrafesa.pe/Home/GetPreguntasFrecuentes",
-      {
-        headers: api.headers,
-      },
-    );
-    return (await req.json()) as FAQ[];
+    const response = await request(api.endpoints.faqs);
+
+    return parseFaqs(await response.json());
   }
 
-  async getArrivalTerminalsByDepartureTerminal(
-    params: DepartureTerminalParams,
-  ): Promise<Terminal[]> {
-    const req = await fetch(
-      `https://emtrafesa.pe/Home/GetSucursalesDestino?origen=${params.departureTerminalId}`,
-      { headers: api.headers },
+  async getDestinations(params: DestinationsParams): Promise<Terminal[]> {
+    const query = new URLSearchParams({ origen: params.departureTerminalId });
+    const response = await request(
+      `${api.endpoints.arrivalTerminals}?${query}`,
     );
-    return (await req.json()) as Terminal[];
+
+    return parseTerminals(await response.json());
   }
 
-  async getDepartureSchedules(
-    params: DepartureScheduleParams,
-  ): Promise<DepartureSchedule[]> {
-    const formattedDate =
-      params.date ||
-      new Intl.DateTimeFormat("es-PE", {
-        timeZone: "America/Lima",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }).format(new Date());
-
-    const req = await fetch("https://emtrafesa.pe/Home/GetItinerario", {
+  async getDepartureSchedules(params: ScheduleParams): Promise<Schedule[]> {
+    const response = await request(api.endpoints.schedules, {
       method: "POST",
-      headers: { ...api.headers, "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         embarque_sucursal_id: params.departureTerminalId,
         desembarque_sucursal_id: params.arrivalTerminalId,
-        embarque_fecha: formattedDate,
+        embarque_fecha: params.date ?? todayInPeru(),
       }),
     });
 
-    return (await req.json()) as DepartureSchedule[];
+    return parseSchedules(await response.json());
   }
 
-  async getLatestPurchaseTickets(
-    params: TicketLookupParams,
-  ): Promise<Ticket[]> {
-    const body = new URLSearchParams();
-    body.append("Dni", params.DNI);
-    body.append("Correo", params.email);
-
-    const req = await fetch("https://emtrafesa.pe/Consulta/PostConsulta", {
+  async getSeatAvailability(
+    params: SeatAvailabilityParams,
+  ): Promise<SeatAvailability> {
+    const response = await request(api.endpoints.seatMap, {
       method: "POST",
-      headers: {
-        ...api.headers,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        programacion_id: String(params.scheduleId),
+        embarque_sucursal_id: params.departureTerminalId,
+        desembarque_sucursal_id: params.arrivalTerminalId,
+      }),
+    });
+
+    return parseSeatAvailability(await response.json());
+  }
+
+  async getPurchasedTickets(params: TicketLookupParams): Promise<Ticket[]> {
+    const body = new URLSearchParams({
+      Dni: params.DNI,
+      Correo: params.email,
+    });
+
+    const response = await request(api.endpoints.ticketLookup, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: body.toString(),
     });
 
-    const html = await req.text();
-    const $ = cheerio.load(html);
-
-    return $(".card-body")
-      .map((_, card) => {
-        const $card = $(card);
-
-        return {
-          dateTime: $card.find("h5").first().text().trim(),
-          seats: $card
-            .find(".text-muted.small span")
-            .toArray()
-            .map((el) => $(el).text().trim())
-            .filter((txt) => /^\d+$/.test(txt)),
-          ticketsCodes: $card
-            .find("p.text-truncate")
-            .text()
-            .trim()
-            .split("|")
-            .map((code) => code.trim()),
-          price: $card.find("h4").first().text().trim(),
-          operationNumber: $card
-            .find("h6.text-success")
-            .text()
-            .replace(/[^0-9]/g, "")
-            .trim(),
-          origin: $card.find("button.btn-sm").first().text().trim(),
-          destination: $card.find("button.btn-sm").last().text().trim(),
-        };
-      })
-      .get();
+    return parseTickets(await response.text());
   }
 
-  async downloadTicketPDF(params: TicketDownloadParams): Promise<Buffer> {
-    const req = await fetch(
-      `https://www.emtrafesa.pe/Home/ComprobanteDescarga?Boletos=3,BP01,${params.ticketCode}`,
-      { headers: api.headers },
+  async getTicketPdf(params: TicketDownloadParams): Promise<Buffer> {
+    const boletos = `${api.ticketDocumentPrefix},${encodeURIComponent(params.ticketCode)}`;
+
+    const response = await request(
+      `${api.endpoints.ticketDownload}?Boletos=${boletos}`,
     );
 
-    if (!req.ok) {
-      throw new Error(`Failed to download ticket PDF: ${req.statusText}`);
-    }
-
-    const arrayBuffer = await req.arrayBuffer();
-    return Buffer.from(arrayBuffer);
+    return readTicketPdf(await response.arrayBuffer(), params.ticketCode);
   }
 }

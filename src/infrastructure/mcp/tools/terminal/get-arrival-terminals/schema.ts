@@ -1,8 +1,0 @@
-import { z } from "zod";
-import { SCHEMA_DESCRIPTIONS } from "./constants";
-
-export const inputSchema = {
-  departureTerminalId: z
-    .string()
-    .describe(SCHEMA_DESCRIPTIONS.departureTerminalId),
-};

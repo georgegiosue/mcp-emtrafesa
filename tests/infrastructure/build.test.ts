@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { Client } from "@modelcontextprotocol/client";
+import { StdioClientTransport } from "@modelcontextprotocol/client/stdio";
 
 type TextContent = { type: "text"; text: string };
 type ResourceContent = {
@@ -13,6 +13,11 @@ type ToolContent = TextContent | ResourceContent;
 
 function content(result: unknown): ToolContent[] {
   return (result as { content: ToolContent[] }).content;
+}
+
+function structured<T>(result: unknown, key: string): T[] {
+  return (result as { structuredContent: Record<string, T[]> })
+    .structuredContent[key];
 }
 
 const ROOT = join(import.meta.dir, "../..");
@@ -48,7 +53,7 @@ afterAll(async () => {
 
 describe("MCP server E2E", () => {
   it("server starts and emits ready message on stderr", () => {
-    expect(stderrOutput).toContain("running");
+    expect(stderrOutput).toContain("listening on stdio");
   });
 
   it("server name and version match package.json", () => {
@@ -82,6 +87,46 @@ describe("MCP server E2E", () => {
     expect(schedTool?.inputSchema).toBeDefined();
   });
 
+  it("every tool advertises a title and read-only annotations", async () => {
+    const { tools } = await client.listTools();
+
+    for (const tool of tools) {
+      expect(tool.title).toBeTruthy();
+      expect(tool.annotations?.readOnlyHint).toBe(true);
+      expect(tool.annotations?.destructiveHint).toBe(false);
+      expect(tool.annotations?.openWorldHint).toBe(true);
+    }
+  });
+
+  it("marks get-departure-schedules as non-idempotent", async () => {
+    const { tools } = await client.listTools();
+    const schedTool = tools.find((t) => t.name === "get-departure-schedules");
+
+    expect(schedTool?.annotations?.idempotentHint).toBe(false);
+  });
+
+  it("advertises outputSchema for the structured-data tools", async () => {
+    const { tools } = await client.listTools();
+
+    for (const name of [
+      "get-terminals",
+      "get-arrival-terminals",
+      "get-departure-schedules",
+      "get-frequently-asked-questions",
+      "get-latest-purchased-tickets",
+    ]) {
+      expect(tools.find((t) => t.name === name)?.outputSchema).toBeDefined();
+    }
+  });
+
+  it("serves server instructions describing the tool chain", () => {
+    const instructions = client.getInstructions();
+
+    expect(instructions).toContain("get-terminals");
+    expect(instructions).toContain("get-arrival-terminals");
+    expect(instructions).toContain("get-departure-schedules");
+  });
+
   it("get-terminals returns a non-empty array of terminals", async () => {
     const result = await client.callTool({
       name: "get-terminals",
@@ -90,10 +135,13 @@ describe("MCP server E2E", () => {
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    const terminals = JSON.parse(item.text);
+    const terminals = structured<Record<string, string>>(result, "terminals");
     expect(Array.isArray(terminals)).toBe(true);
     expect(terminals.length).toBeGreaterThan(0);
-    expect(terminals[0]).toHaveProperty("Id");
+    expect(terminals[0]).toEqual({
+      name: expect.any(String),
+      address: expect.any(String),
+    });
   });
 
   it("get-frequently-asked-questions returns a non-empty array of FAQs", async () => {
@@ -104,20 +152,22 @@ describe("MCP server E2E", () => {
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    const faqs = JSON.parse(item.text);
+    expect(JSON.parse(item.text)).toEqual(result.structuredContent);
+
+    const faqs = structured(result, "faqs");
     expect(Array.isArray(faqs)).toBe(true);
     expect(faqs.length).toBeGreaterThan(0);
   });
 
-  it("get-arrival-terminals returns terminals for a departure id", async () => {
+  it("get-arrival-terminals resolves the origin city by name", async () => {
     const result = await client.callTool({
       name: "get-arrival-terminals",
-      arguments: { departureTerminalId: "001" },
+      arguments: { from: "Trujillo" },
     });
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    const terminals = JSON.parse(item.text);
+    const terminals = structured(result, "arrivalTerminals");
     expect(Array.isArray(terminals)).toBe(true);
     expect(terminals.length).toBeGreaterThan(0);
   });
@@ -126,27 +176,33 @@ describe("MCP server E2E", () => {
     const result = await client.callTool({
       name: "get-departure-schedules",
       arguments: {
-        departureTerminalId: "001",
-        arrivalTerminalId: "003",
+        from: "Trujillo",
+        to: "Cajamarca",
         date: "23/03/2026",
       },
     });
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    const schedules = JSON.parse(item.text);
+
+    const schedules = structured<{ departsAt: string }>(result, "schedules");
     expect(Array.isArray(schedules)).toBe(true);
+    for (const schedule of schedules) {
+      expect(schedule.departsAt).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/,
+      );
+    }
   });
 
   it("get-departure-schedules defaults to today when date is omitted", async () => {
     const result = await client.callTool({
       name: "get-departure-schedules",
-      arguments: { departureTerminalId: "001", arrivalTerminalId: "003" },
+      arguments: { from: "Trujillo", to: "Cajamarca" },
     });
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    expect(() => JSON.parse(item.text)).not.toThrow();
+    expect(Array.isArray(structured(result, "schedules"))).toBe(true);
   });
 
   it("get-latest-purchased-tickets returns tickets for DNI and email", async () => {
@@ -157,8 +213,8 @@ describe("MCP server E2E", () => {
     const item = content(result)[0] as TextContent;
 
     expect(item.type).toBe("text");
-    const tickets = JSON.parse(item.text);
-    expect(Array.isArray(tickets)).toBe(true);
+    expect(JSON.parse(item.text)).toEqual(result.structuredContent);
+    expect(Array.isArray(structured(result, "tickets"))).toBe(true);
   });
 
   it("get-ticket-pdf returns a base64 PDF resource", async () => {

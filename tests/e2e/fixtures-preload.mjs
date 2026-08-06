@@ -41,6 +41,26 @@ if (process.env.MCP_TEST_MOCK === "1") {
     if (u.includes("GetItinerario")) {
       return Promise.resolve(mockResponse(read("GetItinerario_001_003.json")));
     }
+    if (u.includes("GetCroquis")) {
+      return Promise.resolve(
+        mockResponse(
+          JSON.stringify([
+            {
+              Objeto_Tipo_Id: 1,
+              Asiento_Numero: 1,
+              PisoNumero: 1,
+              Asiento_EstaOcupado: false,
+            },
+            {
+              Objeto_Tipo_Id: 1,
+              Asiento_Numero: 2,
+              PisoNumero: 1,
+              Asiento_EstaOcupado: true,
+            },
+          ]),
+        ),
+      );
+    }
     if (u.includes("PostConsulta")) {
       return Promise.resolve(
         mockResponse(read("PostConsulta.html"), "text/html"),
@@ -51,7 +71,8 @@ if (process.env.MCP_TEST_MOCK === "1") {
         ok: true,
         status: 200,
         statusText: "OK",
-        arrayBuffer: () => Promise.resolve(Buffer.from("%PDF-1.4 fake").buffer),
+        arrayBuffer: () =>
+          Promise.resolve(new TextEncoder().encode("%PDF-1.4 fake").buffer),
       });
     }
 
