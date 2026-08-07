@@ -53,4 +53,4 @@ Every field a tool returns describes itself, so Claude knows what it is reading 
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Endpoint insights from [@tecncr](https://github.com/tecncr). Issues and questions: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues).
+MIT — see [LICENSE](LICENSE). Endpoint insights from [@tecncr](https://github.com/tecncr). Issues and questions: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues). Security vulnerabilities: report them privately, see [SECURITY.md](SECURITY.md).

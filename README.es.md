@@ -53,4 +53,4 @@ Cada campo que devuelven las herramientas se describe a sí mismo, así que Clau
 
 ## Licencia
 
-MIT — ver [LICENSE](LICENSE). Endpoints identificados con ayuda de [@tecncr](https://github.com/tecncr). Dudas y reportes: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues).
+MIT — ver [LICENSE](LICENSE). Endpoints identificados con ayuda de [@tecncr](https://github.com/tecncr). Dudas y reportes: [GitHub Issues](https://github.com/georgegiosue/mcp-emtrafesa/issues). Vulnerabilidades de seguridad: repórtalas en privado, ver [SECURITY.es.md](SECURITY.es.md).
