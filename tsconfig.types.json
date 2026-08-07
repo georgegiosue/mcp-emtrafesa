@@ -7,5 +7,6 @@
     "outDir": "./dist",
     "rootDir": "./"
   },
-  "include": ["./src/**/*.ts", "./package.json"]
+  "include": ["./src/**/*.ts", "./package.json"],
+  "exclude": ["./src/worker.ts"]
 }

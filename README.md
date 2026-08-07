@@ -1,34 +1,26 @@
-# ![MCP Logo](https://avatars.githubusercontent.com/u/182288589?s=26&v=4) MCP Emtrafesa
+# MCP Emtrafesa
 
-> A Model Context Protocol (MCP) server for accessing Emtrafesa bus transportation services in Peru
+MCP server for Emtrafesa buses in Peru: terminals, schedules, free seats and the tickets you already bought.
 
 [![CI](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml/badge.svg)](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/georgegiosue/mcp-emtrafesa/branch/master/graph/badge.svg)](https://codecov.io/gh/georgegiosue/mcp-emtrafesa)
 [![NPM Version](https://img.shields.io/npm/v/mcp-emtrafesa?style=flat&logo=npm&logoColor=red)](https://www.npmjs.com/package/mcp-emtrafesa)
-[![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blue)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **English** · [Español](README.es.md)
 
-## Install
+## Connect
+
+**Claude Desktop and claude.ai** — Settings → Connectors → Add custom connector, no authentication:
+
+```
+https://mcp-emtrafesa.georgegiosue.dev/mcp
+```
 
 **Claude Code**
 
 ```bash
-claude mcp add emtrafesa -- npx -y mcp-emtrafesa@latest
-```
-
-**Claude Desktop** — add to `claude_desktop_config.json` and restart:
-
-```json
-{
-  "mcpServers": {
-    "emtrafesa": {
-      "command": "npx",
-      "args": ["-y", "mcp-emtrafesa@latest"]
-    }
-  }
-}
+claude mcp add --transport http emtrafesa https://mcp-emtrafesa.georgegiosue.dev/mcp
 ```
 
 ## What it looks like
@@ -57,15 +49,7 @@ claude mcp add emtrafesa -- npx -y mcp-emtrafesa@latest
 | `get-ticket-pdf` | One ticket as a PDF | `ticketCode` |
 | `get-frequently-asked-questions` | Luggage, minors, seniors, service rules | — |
 
-Every field a tool returns carries its own description in the advertised `outputSchema`, so Claude knows what it is reading without you explaining anything. Omitting `date` means today in Peru; the format is `DD/MM/YYYY`.
-
-## Development
-
-```bash
-bun install
-bun test
-bunx @modelcontextprotocol/inspector bun src/index.ts   # poke at the tools directly
-```
+Every field a tool returns describes itself, so Claude knows what it is reading without you explaining anything. Ask by city name; leave the date out and it means today in Peru.
 
 ## License
 

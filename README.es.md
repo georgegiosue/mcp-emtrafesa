@@ -1,34 +1,26 @@
-# ![MCP Logo](https://avatars.githubusercontent.com/u/182288589?s=26&v=4) MCP Emtrafesa
+# MCP Emtrafesa
 
-> Un servidor del Protocolo de Contexto de Modelo (MCP) para acceder a los servicios de transporte de autobuses de Emtrafesa en Perú
+Servidor MCP para consultar los buses de Emtrafesa en Perú: terminales, horarios, asientos libres y tus boletos comprados.
 
 [![CI](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml/badge.svg)](https://github.com/georgegiosue/mcp-emtrafesa/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/georgegiosue/mcp-emtrafesa/branch/master/graph/badge.svg)](https://codecov.io/gh/georgegiosue/mcp-emtrafesa)
 [![NPM Version](https://img.shields.io/npm/v/mcp-emtrafesa?style=flat&logo=npm&logoColor=red)](https://www.npmjs.com/package/mcp-emtrafesa)
-[![MCP](https://img.shields.io/badge/MCP-Model%20Context%20Protocol-blue)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 [English](README.md) · **Español**
 
-## Instalación
+## Conectar
+
+**Claude Desktop y claude.ai** — Configuración → Conectores → Agregar conector personalizado, sin autenticación:
+
+```
+https://mcp-emtrafesa.georgegiosue.dev/mcp
+```
 
 **Claude Code**
 
 ```bash
-claude mcp add emtrafesa -- npx -y mcp-emtrafesa@latest
-```
-
-**Claude Desktop** — agrega esto a `claude_desktop_config.json` y reinicia:
-
-```json
-{
-  "mcpServers": {
-    "emtrafesa": {
-      "command": "npx",
-      "args": ["-y", "mcp-emtrafesa@latest"]
-    }
-  }
-}
+claude mcp add --transport http emtrafesa https://mcp-emtrafesa.georgegiosue.dev/mcp
 ```
 
 ## Cómo se ve
@@ -57,15 +49,7 @@ claude mcp add emtrafesa -- npx -y mcp-emtrafesa@latest
 | `get-ticket-pdf` | Un boleto en PDF | `ticketCode` |
 | `get-frequently-asked-questions` | Equipaje, menores, adultos mayores, reglas | — |
 
-Cada campo que devuelven las herramientas lleva su propia descripción en el `outputSchema` anunciado, así Claude sabe qué está leyendo sin que tengas que explicarle nada. Si omites `date`, usa hoy en Perú; el formato es `DD/MM/YYYY`.
-
-## Desarrollo
-
-```bash
-bun install
-bun test
-bunx @modelcontextprotocol/inspector bun src/index.ts   # probar las herramientas directamente
-```
+Cada campo que devuelven las herramientas se describe a sí mismo, así que Claude sabe qué está leyendo sin que tengas que explicarle nada. Pídele las cosas por nombre de ciudad; si no dices fecha, usa hoy en Perú.
 
 ## Licencia
 
