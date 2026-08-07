@@ -10,6 +10,11 @@ node_modules/
 biome.json
 tsconfig*.json
 
+# Cloudflare Workers deployment
+wrangler.jsonc
+.wrangler/
+certs/
+
 # IDE and system files
 .idea/
 .vscode/

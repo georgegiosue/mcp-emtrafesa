@@ -7,9 +7,12 @@ import type { EmtrafesaRepository } from "../../domain/ports/emtrafesa.repositor
 import { SERVER_INSTRUCTIONS } from "./instructions";
 import { registerTools } from "./tools";
 
-type PackageJson = { name: string; version: string };
+export type PackageJson = { name: string; version: string };
 
-function buildServer(pkg: PackageJson, repo: EmtrafesaRepository): McpServer {
+export function createServer(
+  pkg: PackageJson,
+  repo: EmtrafesaRepository,
+): McpServer {
   const server = new McpServer(
     { name: pkg.name, version: pkg.version },
     { instructions: SERVER_INSTRUCTIONS },
@@ -24,7 +27,7 @@ export function startServer(
   pkg: PackageJson,
   repo: EmtrafesaRepository,
 ): StdioServerHandle {
-  const handle = serveStdio(() => buildServer(pkg, repo), {
+  const handle = serveStdio(() => createServer(pkg, repo), {
     onerror: (error) => console.error(`[${pkg.name}] transport error:`, error),
   });
 
