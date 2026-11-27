@@ -57,7 +57,7 @@
     "@modelcontextprotocol/client": "2.4.0",
     "@types/bun": "1.4.4",
     "husky": "9.1.7",
-    "wrangler": "4.163.0"
+    "wrangler": "4.167.0"
   },
   "peerDependencies": {
     "typescript": "5.8.3"
